@@ -1,0 +1,24 @@
+#---
+:base_url: "http://www.example.com/"
+:header_file: "./HEADERS.default" # argv
+:username: "username" # argv
+:password: "password" # argv
+
+# opts for spider (only spider local urls)
+:spider_local_only: true
+
+# opts for curl object
+#	set max_redirects and follow_location (follows 302s)
+:follow_location: true
+:max_redirects: 20
+
+#	--use_proxy=host:port overrides both of these settings
+#	to use a proxy (I use burp and so should you)
+:use_proxy: false
+:proxy_url: "localhost:8080"
+
+# cookies (where are we going to save our cookies?)
+:enable_cookies: true
+:cookiejar: "./__cookiejar"
+
+#+++
