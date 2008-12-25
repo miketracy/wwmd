@@ -12,8 +12,8 @@
 :follow_location: true
 :max_redirects: 20
 
-#	--use_proxy=host:port overrides both of these settings
-#	to use a proxy (I use burp and so should you)
+# --use_proxy=host:port overrides both of these settings
+# to use a proxy (I use burp and so should you)
 :use_proxy: false
 :proxy_url: "localhost:8080"
 
