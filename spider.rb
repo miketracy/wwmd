@@ -14,18 +14,33 @@ module WWMD
 		attr_accessor :queued
 		attr_accessor :visited
 		attr_accessor :bypass
+		attr_accessor :local_only
 		attr_reader   :opts
+		attr_reader   :ignore
 
-		def initialize(opts={})
+		DEFAULT_IGNORE = [
+			/logoff/i,
+			/logout/i,
+		]
+
+		# pass me opts and an array of regexps to ignore
+		# we have a set of sane(ish) defaults here
+		def initialize(opts={},ignore=nil)
 			@opts    = opts
 			@visited = []
 			@queued  = []
 			@bypass  = []
+			@local_only = true
+			if !opts[:spider_local_only].nil? then
+				@local_only = opts[:spider_local_only]
+			end
+			@ignore = ignore || DEFAULT_IGNORE
 		end
 
 		# push an url onto the queue
 		def push_url(url)
-			if @opts[:spider_local_only]
+			return false if _check_ignore(url)
+			if @local_only then
 				return false if not url =~ /#{@opts[:base_url]}/
 			end
 			@bypass.each { |b| return true if not (url =~ b).nil? }
@@ -88,5 +103,17 @@ module WWMD
 			return true
 		end
 
+		# set up the ignore list
+		# ignore list is an array of regexp objects
+		# remember to set this up before calling any Page methods
+		def set_ignore(arr)
+			@ignore = arr
+		end
+
+		def _check_ignore(url)
+			ret = false
+			@ignore.each { |x| ret = true if !(url =~ x).nil? }
+			return ret
+		end
 	end
 end
