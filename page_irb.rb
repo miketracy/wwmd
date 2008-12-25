@@ -22,6 +22,7 @@ module WWMD
 			putx "---- javascript found [#{self.has_jlinks?.to_s} | #{self.jlinks.size}]"
 			self.jlinks.each { |url| putx url } if short.nil?
 			putx "---- forms found [#{self.has_form?.to_s} | #{self.forms.size}]"
+			putx "---- comments found [#{self.has_comments?.to_s}]"
 			return nil
 		end
 
