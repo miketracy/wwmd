@@ -53,9 +53,6 @@ module Hpricot
 
 		def to_form_array
 			FormArray.new(self.fields)
-#			ret = FormArray.new(self.fields)
-#			self.fields.each { |f| ret << [ f.get_attribute("name"),f.get_value ] }
-#			return ret
 		end
 
 		def to_array
@@ -66,7 +63,6 @@ module Hpricot
 	class Field < Form
 		def value
 			self._value.nil? ? self.get_attribute("value") : self._value
-#			self.get_attribute("value").nil? ? self.value : self.get_attribute("value")
 		end
 
 		alias get_value value #:nodoc:
