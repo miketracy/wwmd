@@ -34,6 +34,7 @@ module WWMD
 			DEFAULTS.each_key { |k| @opts[k] = opts[k] || DEFAULTS[k] }
 			@spider = Spider.new(opts)
 			@scrape = Scrape.new
+			@scrape.warn = opts[:scrape_warn] if !opts[:scrape_warn].nil?
 			if opts.empty? then
 				puts "Page initialized without opts"
 				@scrape.warn = false
@@ -195,10 +196,13 @@ module WWMD
 
 		# override for Curl::Easy.perform
 		#
+		# if the passed url string doesn't contain an fully qualified
+        # path, we'll guess and prepend opts[:base_url]
+		#
 		# returns: <tt>array [ code, body_data.size ]</tt>
 		def get(url=nil)
-			self.url = url if not url.nil?
-			self.url = url.to_s if url.kind_of?(Symbol)
+#			self.url = url if not url.nil?
+			self.url = WWMDUtils.fq_link(self.opts[:base_url],"/",url) if not url.nil?
 			self.perform
 			if self.ntlm? then
 				putw "WARN: this page requires NTLM Authentication"
@@ -381,6 +385,7 @@ module WWMD
 		def action(id=nil)
 			id = 0 if id.nil?
 			act = self.forms[id].action
+			return self.url if act.nil?
 			if act =~ /^http.?:/ then
 				return act
 			end
@@ -436,11 +441,6 @@ module WWMD
 		def read(filename)
 			self.body_data = File.read(filename)
 			self.set_data
-		end
-
-		# hexdump self.body_data
-		def hexdump
-			self.body_data.hexdump
 		end
 
 		# does this response have SET-COOKIE headers?

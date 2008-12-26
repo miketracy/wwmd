@@ -1,4 +1,6 @@
 module WWMD
+	XSSFISH = "<;'\"}()[]>{"
+
 	DEFAULTS = {
 		:use_auth => true,
 		:enable_cookies => true,

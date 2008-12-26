@@ -35,6 +35,7 @@ module WWMD
 				name  = x.get_attribute(:name)
 				id    = x.get_attribute(:id)
 				value = x.get_attribute(:value)
+				type  = x.get_attribute(:type)
 				next if (name.nil? && id.nil?)
 				ret[name] = value
 				ret[id] = value if ((id || name) != name)
@@ -45,7 +46,7 @@ module WWMD
 		#
 		# return: FormArray containing get params
 		def params
-			return FormArray.new(@cobj.cur.clopp.to_form)
+			return FormArray.new(@cobj.cur.clop.to_form)
 		end
 	end
 end
