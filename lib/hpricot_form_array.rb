@@ -14,8 +14,6 @@ and now everything in this array should be accessed with []= and []
 module Hpricot
 	class FormArray < Array
 
-		attr_accessor :snapshot
-
 		def initialize(fields=nil)
 			if not fields.nil?
 				# this first one is an array of field objects
@@ -40,7 +38,6 @@ module Hpricot
 					end
 				end
 			end
-			@snapshot = ''
 		end
 
 		# "deep enough" copy of this object to make it a real copy
@@ -49,17 +46,6 @@ module Hpricot
 			ret = self.class.new
 			self.each { |r| ret << r.clone }
 			return ret
-		end
-
-		# save a snapshot of the current form values (BROKEN)
-		def snap
-			@snapshot = self.clone
-		end
-
-		# reset form values to the last snapshot (BROKEN)
-		def reset
-			self.clear
-			self.snapshot.each { |k,v| self.extend!(k,v) }
 		end
 
 		def clear
@@ -76,9 +62,11 @@ module Hpricot
 		alias has_key? include?#:nodoc:
 
 		# add key/value pairs to form
-		def extend!(key,value)
+		def add(key,value)
 			self << [key,value]
 		end
+
+		alias extend! add #:nodoc
 
 		# key = Fixnum set value at index key
 		# key = String find key named string and set value
@@ -105,21 +93,24 @@ module Hpricot
 		end
 
 		alias_method :old_set, :[]=#:nodoc:
-		# set a key using its index, array key or extend using a new key i.e.:
-		# if setting
+		# set a key using its index, array key or add using a new key i.e.:
+		# if setting:
 		#  form = [['key','value'],['foo','bar']]
-		#  form[0] = "newalue
+		#  form[0] = ["replacekey","newalue"]
+		#  form["replacekey"] = "newervalue"
+		# if adding:
+		#  form["newkey"] = "value"
 		#  
-		#  
-		
-#		def []=(*args)#:nodoc:
-#			key,value = args
-#			if self.map { |x| x.first }.flatten.include?(key) then
-#				self.set_value!(key,value)
-#			elsif key.class == Fixnum
-#				self.extend!(key,value)
-#			end
-#		end
+		def []=(*args)
+			key,value = args
+			if args.first.kind_of?(Fixnum) then
+				return self.old_set(*args)
+			elsif self.has_key?(key) then
+				return self.set_value(key,value)
+			else
+				return self.add(key,value)
+			end
+		end
 
 		alias set_value set_value!
 		alias set set_value!
@@ -147,22 +138,36 @@ module Hpricot
 		alias set_all setall!#:nodoc
 
 		# delete all key = value pairs from self where key = key
-		def delete_keys!(key)
+		def delete_key(key)
 			self.reject! { |x,y| x == key }
 		end
 
-		alias delete_key! delete_keys!
+		alias delete_keys! delete_key #:nodoc:
+		alias delete_key! delete_key #:nodoc:
 
+		# escape form keys in place
+		def escape_keys!(reg=WWMD::ESCAPE[:url])
+			return nil if reg == :none
+			self.map! { |x,y| [x.escape(reg),y] }
+		end
+
+		# unescape form keys in place
+		def unescape_keys!(reg=WWMD::ESCAPE[:url])
+			return nil if reg == :none
+			self.map! { |x,y| [x.unescape,y] }
+		end
+
+		# escape form values in place
 		def escape_all!(reg=WWMD::ESCAPE[:url])
 			return nil if reg == :none
-			self.each_index { |i| self.set_value(i,self[i][1].to_s.escape(reg)) }
+			self.map! { |x,y| [x,y.escape(reg)] }
 		end
 
 		alias escape_all escape_all!#:nodoc:
 
-		# unescape all form data in place
+		# unescape all form values in place
 		def unescape_all!
-			self.each_index { |i| self.set_value(i,self[i][1].gsub(/\+/," ").unescape) }
+			self.map! { |x,y| [x,y.unescape] }
 		end
 
 		alias unescape_all unescape_all!#:nodoc:
@@ -177,13 +182,15 @@ module Hpricot
 		end
 
 		# convert form into a get parameters string
-		def to_get
+		#
+		# pass me a base to get a full url to pass to Page.get
+		def to_get(base="")
 			ret = []
 			self.each do |i|
 				ret.push(i.join("="))
 			end
 			ret = ret.join("&")
-			return "?" + ret.to_s
+			return base.clip + "?" + ret.to_s
 		end
 
 		# IRB: puts the form in human readable format
@@ -194,7 +201,7 @@ module Hpricot
 			else
 				self.each_index { |i| puts i.to_s + " :: " + self[i][0].to_s + " = " + self[i][1].to_s }
 			end
-			return true
+			return nil
 		end
 
 		# meh
@@ -202,6 +209,7 @@ module Hpricot
 			self.insert(0,[ "__VIEWSTATE","" ])
 			self.insert(0,[ "__EVENTARGUMENT","" ])
 			self.insert(0,[ "__EVENTTARGET","" ])
+			return nil
 		end
 
 		alias add_state add_viewstate#:nodoc:
@@ -225,20 +233,21 @@ module Hpricot
 			return ret
 		end
 
-		def burpify
-			foo = self.clone
-			foo.each_index do |i|
-				next if foo[i][0] =~ /^__/
-				foo.set_value!(i,"#{foo.get_value(i)}" + "\302\247" + "\302\247")
+		def burpify #:nodoc:
+			ret = self.clone
+			ret.each_index do |i|
+				next if ret[i][0] =~ /^__/
+				ret.set_value!(i,"#{ret.get_value(i)}" + "\302\247" + "\302\247")
 			end
-			system("echo '#{foo.to_post}' | pbcopy")
-			return foo
+			system("echo '#{ret.to_post}' | pbcopy")
+			return ret
 		end
 
+		# return md5 hash of sorted list of keys
 		def fingerprint
 			return self.map { |k,v| k }.sort.to_s.md5
 		end
+		alias fp fingerprint #:nodoc:
 
-		alias fp fingerprint
 	end
 end
