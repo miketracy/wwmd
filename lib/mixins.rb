@@ -9,12 +9,12 @@ alias putd puts#:nodoc:
 alias putx puts#:nodoc:
 alias putw puts#:nodoc:
 
-# I really hate that these don't work sometimes
+# I really hate this
 class NilClass#:nodoc:
 	def empty?; return true; end
 	def size;   return 0;    end
 	def to_form; return FormArray.new([]); end
-	def clopp; return nil; end
+	def clop; return nil; end
 	def inner_html; return nil; end
 	def get_attribute(*args); return nil; end
 	def grep(*args); return []; end
@@ -81,27 +81,21 @@ class String
 		return self
 	end
 
-	# return everything in the string (url) including and after the first get param
+	# return everything in the string (url) after the first get parameter
+	# without the leading '?'
+	#
+	# pass true as the second param to also get back the ?
 	## "http://foo.bar.com/page.asp?somearg=foo&otherarg=bar".clop 
-	## => "?somearg=foo&otherarg=bar"
-	def clop(pref="?")
+	## => "somearg=foo&otherarg=bar"
+	def clop(pref="?",preftoo=false)
+		(preftoo == false) ? add = "" : add = pref
 		if (v = self.index(pref))
-			return pref + self[(v+1)..-1]
+			return add + self[(v+1)..-1]
 		end
 		return nil
 	end
 
-	# return everything in the string (url) after the first get parameter
-	# without the leading '?'
-	## "http://foo.bar.com/page.asp?somearg=foo&otherarg=bar".clopp
-	## => "somearg=foo&otherarg=bar"
-	## (useful or calling to_form directly (i.e.:  form = somestr.clopp.to_form)
-	def clopp(pref="?")
-		if (v = self.index(pref))
-			return self[(v+1)..-1]
-		end
-		return nil
-	end
+	def clopp; self.clop("?",true); end #:nodoc:
 
 	# base 64 decode
 	def b64d
@@ -238,6 +232,13 @@ class String
 			return false
 		end
 		return true
+	end
+
+	# return a literal regexp object for this string
+	#
+	# escape regexp operators
+	def to_regexp
+		return Regexp.new(self.gsub(/([\[\]\{\}\(\)\*\$])/) { |x| '\\' + x })
 	end
 
 	def head(c=5)
