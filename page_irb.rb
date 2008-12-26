@@ -84,5 +84,17 @@ module WWMD
 			self.search("//*[@onclick]").each { |x| puts x.get_attribute('onclick') }
 			nil
 		end
+
+		# hexdump self.body_data
+		def hexdump
+			puts self.body_data.hexdump
+		end
+
+		# this only works on a mac so get a mac
+		def open #:nodoc:
+			fn = "wwmdtmp_#{Guid.new}.html"
+			self.write(fn)
+			%x[open #{fn}]
+		end
 	end
 end
