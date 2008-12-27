@@ -26,6 +26,7 @@ module WWMD
 			@type,tpath = @base.split(":",2)
 			a_path = tpath.dirname.split("/").reject { |x| x.empty? }
 			@location = a_path.shift
+			a_path = [] if !(path =~ (/^\//)).nil?
 			b_path = (a_path + path.split("/").reject { |x| x.empty? }).flatten
 			c_path = []
 			b_path.each do |x|
