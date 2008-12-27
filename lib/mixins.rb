@@ -238,7 +238,7 @@ class String
 	#
 	# escape regexp operators
 	def to_regexp
-		return Regexp.new(self.gsub(/([\[\]\{\}\(\)\*\$])/) { |x| '\\' + x })
+		return Regexp.new(self.gsub(/([\[\]\{\}\(\)\*\$\?])/) { |x| '\\' + x })
 	end
 
 	def head(c=5)

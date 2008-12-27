@@ -28,6 +28,7 @@ require 'page_irb'
 require 'page_auth'
 require 'page_utils'
 require 'page_config'
+require 'page_urlparse'
 require 'scrape'
 require 'spider'
 

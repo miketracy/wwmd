@@ -1,5 +1,5 @@
 #---
-:base_url: "http://www.example.com/"
+:base_url: "http://www.example.com"
 :header_file: "./HEADERS.default" # argv
 :username: "username" # argv
 :password: "password" # argv

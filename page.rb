@@ -15,6 +15,7 @@ module WWMD
 	attr_reader   :fields        # array of Hpricot::Field objects
 	attr_reader   :spider        # spider object
 	attr_reader   :scrape        # scrape object
+	attr_reader   :urlparse      # urlparse object
 	attr_reader   :comments
 	attr_reader   :last_url
 	attr_reader   :h_response_code
@@ -39,6 +40,7 @@ module WWMD
 				puts "Page initialized without opts"
 				@scrape.warn = false
 			end
+			@urlparse = URLParse.new()
 			@inputs = Inputs.new(self)
 			@logged_in = false
 			@use_referer = false
@@ -84,7 +86,6 @@ module WWMD
 				self.body_data.replace(gz.read)
 			rescue => e
 			end
-
 			@scrape.reset(self.body_data)
 			@inputs.set
 
@@ -96,7 +97,7 @@ module WWMD
 				c =~ /\[if lt IE \d/
 			end
 			@links = @scrape.for_links.map do |url|
-				WWMDUtils.fq_link(self.opts[:base_url],self.last_effective_url,url)
+				@urlparse.parse(self.last_effective_url,url)
 			end
 			@jlinks = @scrape.for_javascript_links
 			@forms = []
@@ -201,8 +202,7 @@ module WWMD
 		#
 		# returns: <tt>array [ code, body_data.size ]</tt>
 		def get(url=nil)
-#			self.url = url if not url.nil?
-			self.url = WWMDUtils.fq_link(self.opts[:base_url],"/",url) if not url.nil?
+			self.url = @urlparse.parse(self.opts[:base_url],url) if not url.nil?
 			self.perform
 			if self.ntlm? then
 				putw "WARN: this page requires NTLM Authentication"
@@ -385,23 +385,8 @@ module WWMD
 		def action(id=nil)
 			id = 0 if id.nil?
 			act = self.forms[id].action
-			return self.url if act.nil?
-			if act =~ /^http.?:/ then
-				return act
-			end
-			if act.match(/^\//) then
-				if self.opts[:base_url].nil? then
-					rurl = self.last_effective_url.split("/")[0..3].join("/")
-				else
-					rurl = self.opts[:base_url] + "/"
-				end
-			else
-				rurl = self.last_effective_url + "/"
-				rurl = self.last_effective_url.dirname if self.opts[:base_url] != self.last_effective_url
-			end
-			murl = act.gsub(/^\//,'')
-			ret =  WWMDUtils.fix_dotdot(rurl + murl)
-			return ret
+			return self.last_effective_url if act.nil?
+			return @urlparse.parse(self.last_effective_url,act)
 		end
 
 		# return an array of Hpricot::Element objects for an xpath search
