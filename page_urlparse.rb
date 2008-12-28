@@ -1,33 +1,42 @@
 module WWMD
-	# this is pretty awful but yay for experiments in re-inventing the wheel
+	# yay for experiments in re-inventing the wheel
 	class URLParse
 		HANDLERS = [:https,:http,:ftp,:file]
-		attr_reader :type
-		attr_reader :host
-		attr_reader :path
-		attr_reader :script
-		attr_reader :base
-		attr_reader :path
+		attr_reader :proto,:location,:path,:script,:rpath
 
 		def initialize()
+			# nothing to see here, move along
 		end
 
-		def parse(base,path)
+		def parse(base,actual)
+			@proto = @location = @path = @script = @rpath = nil
 			@base = base
-			@path = path
-			@type = @location = nil
+			@actual = actual
+			if self.has_proto?
+				@base = @actual
+				@actual = ""
+			end
 			@base += "/" if (!@base.has_ext? || @base.split("/").size == 3)
-			return path if self.has_location?
-			@path = hash_me.join("/")
-			return "#{@type}://#{@location}/#{@path}"
+			@rpath = make_me_path.join("/")
+			@path = "/" + @rpath
+			if @rpath.has_ext? then
+				@path = "/" + @rpath.dirname
+				@script = @rpath.basename
+			end
+			return "#{@proto}://#{@location}/#{rpath}"
+#			return "#{@proto}://#{@location}#{@path}#{script}"
 		end
 
-		def hash_me
-			@type,tpath = @base.split(":",2)
-			a_path = tpath.dirname.split("/").reject { |x| x.empty? }
+		def make_me_path
+			@proto,tpath = @base.split(":",2)
+			if @actual.empty? then
+				a_path = tpath.split("/").reject { |x| x.empty? }
+			else
+				a_path = tpath.dirname.split("/").reject { |x| x.empty? }
+			end
 			@location = a_path.shift
-			a_path = [] if !(path =~ (/^\//)).nil?
-			b_path = (a_path + path.split("/").reject { |x| x.empty? }).flatten
+			a_path = [] if !(@actual =~ (/^\//)).nil?
+			b_path = (a_path + @actual.split("/").reject { |x| x.empty? }).flatten
 			c_path = []
 			b_path.each do |x|
 				(c_path.pop;next) if x == ".."
@@ -37,8 +46,8 @@ module WWMD
 			return c_path
 		end
 
-		def has_location?
-			return true if HANDLERS.include?(path.split(":").first.downcase.to_sym)
+		def has_proto?
+			return true if HANDLERS.include?(@actual.split(":").first.downcase.to_sym)
 		end
 
 	end
