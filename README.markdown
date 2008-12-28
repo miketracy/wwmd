@@ -25,6 +25,8 @@ check the wiki regularly.
 
 ### WWMD relies on these ruby libraries:
 
+* rubygems
+* ruby-debug
 * curb
 * hpricot
 * htmlentities
