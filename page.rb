@@ -11,14 +11,11 @@ module WWMD
 	attr_reader   :last_error
 	attr_reader   :links         # array of links (urls)
 	attr_reader   :jlinks        # array of included javascript files
-	attr_reader   :forms         # array of Hpricot::Form objects
 	attr_reader   :fields        # array of Hpricot::Field objects
 	attr_reader   :spider        # spider object
 	attr_reader   :scrape        # scrape object
 	attr_reader   :urlparse      # urlparse object
 	attr_reader   :comments
-	attr_reader   :last_url
-	attr_reader   :h_response_code
 
 	attr_accessor :base_url      # needed to properly munge relative urls into fq urls
 	attr_accessor :logged_in     # are we logged in?
@@ -123,7 +120,6 @@ module WWMD
 		# use get and submit respectively for GET and POST
 		def perform
 			self.clear_data
-			@last_url = self.url
 			self.headers["Referer"] = self.cur if self.use_referer
 			begin
 				@curl_object.perform
