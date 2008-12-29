@@ -16,6 +16,7 @@ module WWMD
 				@base = @actual
 				@actual = ""
 			end
+# does this work for http://location/?  probably not
 			@base += "/" if (!@base.has_ext? || @base.split("/").size == 3)
 			@rpath = make_me_path.join("/")
 			@path = "/" + @rpath
@@ -24,7 +25,6 @@ module WWMD
 				@script = @rpath.basename
 			end
 			return "#{@proto}://#{@location}/#{rpath}"
-#			return "#{@proto}://#{@location}#{@path}#{script}"
 		end
 
 		def make_me_path
@@ -36,14 +36,16 @@ module WWMD
 			end
 			@location = a_path.shift
 			a_path = [] if !(@actual =~ (/^\//)).nil?
-			b_path = (a_path + @actual.split("/").reject { |x| x.empty? }).flatten
-			c_path = []
-			b_path.each do |x|
-				(c_path.pop;next) if x == ".."
+			b_path = @actual.split("/").reject { |x| x.empty? }
+			a_path.pop if (a_path[-1] =~ /^\?/).kind_of?(Fixnum) && !b_path.empty?
+			c_path = (a_path + @actual.split("/").reject { |x| x.empty? }).flatten
+			d_path = []
+			c_path.each do |x|
+				(d_path.pop;next) if x == ".."
 				next if x == "."
-				c_path << x
+				d_path << x
 			end
-			return c_path
+			return d_path
 		end
 
 		def has_proto?
