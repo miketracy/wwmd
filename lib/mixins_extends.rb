@@ -152,9 +152,9 @@ class String
     Zlib.crc32 self
   end
 
-	def swap16; unpack("v*").pack("n*"); end
-	def to_utf16; Kconv.kconv(self, NKF::UTF16, NKF::ASCII).swap16; end
-	def to_ascii; Kconv.kconv(swap16, NKF::ASCII, NKF::UTF16); end
+  def swap16; unpack("v*").pack("n*"); end
+  def to_utf16; Kconv.kconv(self, NKF::UTF16, NKF::ASCII).swap16; end
+  def to_ascii; Kconv.kconv(swap16, NKF::ASCII, NKF::UTF16); end
 
 end # class String
 
