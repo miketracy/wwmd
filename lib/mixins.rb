@@ -18,6 +18,7 @@ class NilClass#:nodoc:
 	def inner_html; return nil; end
 	def get_attribute(*args); return nil; end
 	def grep(*args); return []; end
+	def escape(*args); return nil; end
 end
 
 class Numeric
