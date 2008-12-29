@@ -110,17 +110,17 @@ class String
 
   # URI.escape using defaults or passed regexp
   def escape(reg=WWMD::ESCAPE[:default],unicodify=false)
-    if reg == WWMD::ESCAPE[:none] then
+    if reg == WWMD::ESCAPE[:none]
       return self
-    elsif reg == WWMD::ESCAPE[:default] then
+    elsif reg == WWMD::ESCAPE[:default]
       ret = URI.escape(self)
-    elsif reg.kind_of?(Symbol) then
+    elsif reg.kind_of?(Symbol)
       ret = URI.escape(self,WWMD::ESCAPE[reg])
       reg = WWMD::ESCAPE[reg]
     else
       ret = URI.escape(self,reg)
     end
-    if unicodify then
+    if unicodify
       ret.gsub!(/%/,"%u00")
     end
     return ret

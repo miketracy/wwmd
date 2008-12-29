@@ -29,7 +29,7 @@ module WWMD
     #  if clear == true then headers will be cleared before setting
     def set_headers(arg=nil,clear=false)
       self.clear_headers if clear
-      if arg.nil? then
+      if arg.nil?
         begin
           self.clear_headers
           WWMD::DEFAULT_HEADERS.each { |k,v| self.headers[k] = v }
@@ -38,10 +38,10 @@ module WWMD
           puts e
           return "error setting headers"
         end
-      elsif arg.class == Symbol then
+      elsif arg.class == Symbol
         self.set_headers(WWMD::HEADERS[arg])
         return "headers set from #{arg}"
-      elsif arg.class == Hash then
+      elsif arg.class == Hash
         arg.each { |k,v| self.headers[k] = v }
         return "headers set from hash"
       end

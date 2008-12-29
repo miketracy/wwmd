@@ -17,22 +17,22 @@ module Hpricot
     def initialize(fields=nil)
       if not fields.nil?
         # this first one is an array of field objects
-        if fields.class == Array then
+        if fields.class == Array
           fields.each do |f|
             name = f.get_attribute("name")
-            if self.name_exists(name) then
-              if f.get_attribute("type") == "hidden" then
+            if self.name_exists(name)
+              if f.get_attribute("type") == "hidden"
                 self.set name,f.get_value
-              elsif f.get_attribute("type") == "checkbox" and f.to_html.grep(/checked/) != '' then
+              elsif f.get_attribute("type") == "checkbox" and f.to_html.grep(/checked/) != ''
                 self.set name,f.get_value
               end
             else
               self << [ f.get_attribute("name"),f.get_value ]
             end
           end
-        elsif fields.class == Hash then
+        elsif fields.class == Hash
           fields.each_pair { |k,v| self.extend! k,v }
-        elsif fields.class == String then
+        elsif fields.class == String
           fields.split("&").each do |f|
             self.extend!(f.split("=")[0],f.split("=")[1])
           end
@@ -71,7 +71,7 @@ module Hpricot
     # key = Fixnum set value at index key
     # key = String find key named string and set value
     def set_value!(key,value)
-      if key.class == Fixnum then
+      if key.class == Fixnum
         self[key][1] = value
         return [self[key][0], value]
       end
@@ -85,7 +85,7 @@ module Hpricot
 
     alias_method :old_get, :[]#:nodoc:
     def [](*args)
-      if args.first.class == Fixnum then
+      if args.first.class == Fixnum
         self.old_get(args.first)
       else
         self.get_value(args.first)
@@ -103,9 +103,9 @@ module Hpricot
     #  
     def []=(*args)
       key,value = args
-      if args.first.kind_of?(Fixnum) then
+      if args.first.kind_of?(Fixnum)
         return self.old_set(*args)
-      elsif self.has_key?(key) then
+      elsif self.has_key?(key)
         return self.set_value(key,value)
       else
         return self.add(key,value)
@@ -116,7 +116,7 @@ module Hpricot
     alias set set_value!
 
     def get_value(key)
-      if key.class == Fixnum then
+      if key.class == Fixnum
         return self[key][1]
       end
       self.each_index do |i|
@@ -196,7 +196,7 @@ module Hpricot
     # IRB: puts the form in human readable format
     # if you <tt>form.show(true)</tt> it will show unescaped values
     def show(unescape=false)
-      if unescape then
+      if unescape
         self.each_index { |i| puts i.to_s + " :: " + self[i][0].to_s + " = " + self[i][1].to_s.unescape }
       else
         self.each_index { |i| puts i.to_s + " :: " + self[i][0].to_s + " = " + self[i][1].to_s }

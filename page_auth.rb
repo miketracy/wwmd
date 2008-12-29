@@ -19,7 +19,7 @@ module WWMD
       return false if self.code != "401"
       count = 0
       self.header_data.each do |i|
-        if i[0] =~ /www-authenticate/i then
+        if i[0] =~ /www-authenticate/i
           count += 1 if (i[1] == "Negotiate" || i[1] == "NTLM")
         end
       end
@@ -32,7 +32,7 @@ module WWMD
       return false if self.code != "401"
       count = 0
       self.header_data.each do |i|
-        if i[0] =~ /www-authenticate/i then
+        if i[0] =~ /www-authenticate/i
           count += 1
         end
       end

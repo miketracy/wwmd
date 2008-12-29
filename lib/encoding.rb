@@ -21,9 +21,9 @@ module WWMD
     #  String.to_utf7
     #  String.to_utf7!
     def self.to_utf7(str,all=nil)
-      if all.kind_of?(Regexp) then
+      if all.kind_of?(Regexp)
         reg = all
-      elsif all.kind_of?(TrueClass) then
+      elsif all.kind_of?(TrueClass)
         reg = ESCAPE[:all]
       else
         reg = ESCAPE[:nalnum] || /[^a-zA-Z0-9]/

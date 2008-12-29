@@ -33,7 +33,7 @@ module WWMD
       @spider = Spider.new(opts)
       @scrape = Scrape.new
       @scrape.warn = opts[:scrape_warn] if !opts[:scrape_warn].nil?
-      if opts.empty? then
+      if opts.empty?
         puts "Page initialized without opts"
         @scrape.warn = false
       end
@@ -57,7 +57,7 @@ module WWMD
 
       # cookies?
       @curl_object.enable_cookies = @opts[:enable_cookies]
-      if @curl_object.enable_cookies? then
+      if @curl_object.enable_cookies?
         @curl_object.cookiejar = @opts[:cookiejar] || "./__cookiejar"
       end
 
@@ -146,7 +146,7 @@ module WWMD
 =begin
   this is just getting worse and worse
 =end
-      if iform.class == "Symbol" then
+      if iform.class == "Symbol"
         reg = iform
         iform = nil
       end
@@ -156,7 +156,7 @@ module WWMD
       self.clear_header("Content-length")
       self.headers["Referer"] = self.cur if self.use_referer
       if iform == nil
-        if not self.form.empty? then
+        if not self.form.empty?
           sform = self.form.clone
         else
           return "no form provided"
@@ -165,7 +165,7 @@ module WWMD
         sform = iform.clone             # clone the form so that we don't change the original
       end
       sform.escape_all!(reg)
-      if sform != '' then
+      if sform != ''
         self.http_post(sform.to_post)
         self.post_data = sform.to_post
       else
@@ -184,7 +184,7 @@ module WWMD
       self.clear_data
       self.http_post(post_string)
       self.set_data
-      if self.ntlm? then
+      if self.ntlm?
         putw "WARN: this page requires NTLM Authentication"
         putw "WARN: use ntlm_get instead of get"
       end
@@ -200,7 +200,7 @@ module WWMD
     def get(url=nil)
       self.url = @urlparse.parse(self.opts[:base_url],url) if not url.nil?
       self.perform
-      if self.ntlm? then
+      if self.ntlm?
         putw "WARN: this page requires NTLM Authentication"
         putw "use ntlm_get instead of get"
       end
@@ -312,13 +312,9 @@ module WWMD
 #:section: Other methods
 
     def all_tags#:nodoc:
-      return self.search("//").map do |x|
+      return self.search("//").map { |x|
         x if x.class == Hpricot::Elem
-      end.reject! do |x|
-        x.nil?
-      end.map do |x|
-        x.name
-      end
+      }.reject! { |y| y.nil? }.map { |z| z.namex }
     end
 
     # return MD5 for DOM fingerprint
@@ -428,7 +424,7 @@ module WWMD
     def set_cookies?
       ret = []
       self.header_data.each do |x|
-        if x[0].upcase == "SET-COOKIE" then
+        if x[0].upcase == "SET-COOKIE"
           ret << x[1]
         end
       end

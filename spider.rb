@@ -31,7 +31,7 @@ module WWMD
       @queued  = []
       @bypass  = []
       @local_only = true
-      if !opts[:spider_local_only].nil? then
+      if !opts[:spider_local_only].nil?
         @local_only = opts[:spider_local_only]
       end
       @ignore = ignore || DEFAULT_IGNORE
@@ -40,7 +40,7 @@ module WWMD
     # push an url onto the queue
     def push_url(url)
       return false if _check_ignore(url)
-      if @local_only then
+      if @local_only
         return false if not url =~ /#{@opts[:base_url]}/
       end
       @bypass.each { |b| return true if not (url =~ b).nil? }
@@ -76,7 +76,7 @@ module WWMD
     def show_visited(id=nil)
       if id.nil?
         @visited.each_index { |i| putx i.to_s + " :: " + @visited[i].to_s }
-        return true
+        return nil
       else
         return @visited[id]
       end
@@ -88,7 +88,7 @@ module WWMD
     def show_queue(id=nil)
       if id.nil?
         @queued.each_index { |i| putx i.to_s + " :: " + @queued[i].to_s }
-        return true
+        return nil
       else
         return @queued[id]
       end
@@ -100,7 +100,7 @@ module WWMD
     def add(url='',links=[])
       @visited.push(url)
       links.each { |l| self.push_url l }
-      return true
+      return nil
     end
 
     # set up the ignore list
@@ -111,9 +111,8 @@ module WWMD
     end
 
     def _check_ignore(url)
-      ret = false
-      @ignore.each { |x| ret = true if !(url =~ x).nil? }
-      return ret
+      @ignore.each { |x| return true if !(url =~ x).nil? }
+      return false
     end
   end
 end

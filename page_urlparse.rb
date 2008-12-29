@@ -20,7 +20,7 @@ module WWMD
       @base += "/" if (!@base.has_ext? || @base.split("/").size == 3)
       @rpath = make_me_path.join("/")
       @path = "/" + @rpath
-      if @rpath.has_ext? then
+      if @rpath.has_ext?
         @path = "/" + @rpath.dirname
         @script = @rpath.basename
       end
@@ -29,7 +29,7 @@ module WWMD
 
     def make_me_path
       @proto,tpath = @base.split(":",2)
-      if @actual.empty? then
+      if @actual.empty?
         a_path = tpath.split("/").reject { |x| x.empty? }
       else
         a_path = tpath.dirname.split("/").reject { |x| x.empty? }

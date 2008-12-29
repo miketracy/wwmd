@@ -52,14 +52,12 @@ module WWMD
     # scan the passed string for the configured regular expressions
     # and return them as an array
     def urls_from_regexp(content,re,split=0)
-      ret = Array.new
+      ret = []
       scrape = content.scan(re)
       scrape.each do |url|
-        putd "DEBG: matched #{re.source} :: #{url.to_s}" if self.debug
         # cheat and take split string(,)[split]
         add = url.to_s.split(',')[split].gsub(/['"]/, '')
         next if (add == '' || add.nil?)
-        putd "DEBG: " + re.inspect + " : " + add if self.debug
         ret << add
       end
       return ret
@@ -68,16 +66,11 @@ module WWMD
     # xpath search for tags and return the passed attribute
     #  urls_from_xpath("//a","href")
     def urls_from_xpath(xpath,attr)
-      putd "DEBG: called with xpath=#{xpath} attr=#{attr}" if self.debug
-      ret = Array.new
+      ret = []
       @hdoc.search(xpath).each do |elem|
         url = elem.get_attribute(attr)
-        if (url.nil? || url == '') then
-          next
-        end
-        url.strip!
-        putd "DEBG: #{xpath} #{attr} :: #{url}" if self.debug
-        ret << url
+        next if url.empty?
+        ret << url.strip
       end
       return ret
     end
@@ -92,7 +85,7 @@ module WWMD
 
     # default reject links (override using reject_links in helper script)
     def default_reject_links
-      @links.reject! { |url|
+      @links.reject! do |url|
         url.nil? ||
         url.extname == ".css" ||
         url.extname == ".pdf" ||
@@ -100,14 +93,13 @@ module WWMD
         url =~ /mailto:/i ||
         url =~ /[\[\]]/ ||
         url =~ /^#/
-      }
+      end
     end
 
     # define an urls_from_helper method in your task specific script
     def urls_from_helper
       putw "WARN: Please set an urls_from_helper override in your helper script" if @warn
       return nil
-      raise e
     end
 
     # use xpath searches to get
@@ -159,13 +151,9 @@ module WWMD
 
     # scrape the page for <script src=""> tags
     def for_javascript_links
-      urls = Array.new
-      @hdoc.search("//script[@src]").each do |tag|
-        urls << tag.get_attribute("src")
-      end
-      urls.reject! { |url|
-        File.extname(url).clip != ".js"
-      }
+      urls = []
+      @hdoc.search("//script[@src]").each { |tag| urls << tag.get_attribute("src") }
+      urls.reject! { |url| File.extname(url).clip != ".js" }
       return urls
     end
 
@@ -174,34 +162,17 @@ module WWMD
       @page.scan(/\<!\s*--(.*?)--\s*\>/m).map { |x| x.to_s }
     end
 
-    def for_ajax#:nodoc: # NOTIMPLEMENTED
-      ajax = Array.new
-    end
-
-    # Create and return an Hpricot::Form object for a form
-    # on this page
-    def for_form(page)#:nodoc: # NOTUSED
-      Hpricot::Form.new(Hpricot(page))
-    end
-
-    # Create and return an array of Hpricot::Field objects
-    # for form fields on this page
-    def for_form_fields#:nodoc: # NOTUSED
-      form = for_form(@page)
-      return form.fields
-    end
-
     # scrape the page for a meta refresh tag and return the url from the contents attribute or nil
     def for_meta_refresh
       has_mr = @hdoc.search("//meta").map { |x| x.get_attribute('http-equiv') }.include?('Refresh')
-      if has_mr then
+      if has_mr
         urls = @hdoc.search("//meta[@content]").map { |x| x.get_attribute('content').split(";",2)[1] }
-        if urls.size > 1 then
+        if urls.size > 1
           STDERR.puts "PARSE ERROR: more than one meta refresh tag"
           return "ERR"
         end
         k,v = urls.first.split("=",2)
-        if k.upcase.strip != "URL" then
+        if k.upcase.strip != "URL"
           STDERR.puts "PARSE ERROR: content attribute of meta refresh does not contain url"
           return "ERR"
         end
@@ -217,7 +188,7 @@ module WWMD
       @hdoc.search("//script").each do |scr|
         scr.inner_html.scan(/.*location.href\s*=\s*['"]([^'"]+)['"]/i).each { |x| redirs += x }
       end
-      if redirs.size > 1 then
+      if redirs.size > 1
         STDERR.puts "PARSE ERROR: more than one javascript redirect"
         return "ERR"
       end
