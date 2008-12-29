@@ -220,15 +220,17 @@ module Hpricot
 		end
 
 		# dump a web page containing a csrf example of the current FormArray
-		def to_csrf(action,escape=WWMD::ESCAPE[:default])
+		def to_csrf(action)
 			ret = ""
 			ret << "<html><body>\n"
-			ret << "<form method='post' id='mtsotest' name='mtsotest' action='#{action}'>\n"
-			self.each_index do |i|
-		        ret << "<input name='#{self[i][0].to_s.escape(escape)}' type='hidden' value='#{self[i][1].to_s.escape(escape)}' />\n"
+			ret << "<form method='post' id='wwmdtest' name='wwmdtest' action='#{action}'>\n"
+			self.each do |key,val|
+				val = val.unescape.gsub(/'/) { %q[\'] }
+		        ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val}' />\n"
+#		        ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val.to_s.unescape.gsub(/'/,"\\'")}' />\n"
 			end
 			ret << "</form>\n"
-			ret << "<script>document.mtsotest.submit()</script>\n"
+			ret << "<script>document.wwmdtest.submit()</script>\n"
 			ret << "</body></html>\n"
 			return ret
 		end
