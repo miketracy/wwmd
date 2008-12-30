@@ -29,7 +29,7 @@ module WWMD
 
     def initialize(opts={})
       @opts = opts.clone
-      DEFAULTS.each_key { |k| @opts[k] = opts[k] || DEFAULTS[k] }
+      DEFAULTS.each { |k,v| @opts[k] = v if opts[k].nil? }
       @spider = Spider.new(opts)
       @scrape = Scrape.new
       @scrape.warn = opts[:scrape_warn] if !opts[:scrape_warn].nil?
