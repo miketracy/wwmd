@@ -154,7 +154,7 @@ class String
     Encoding.to_utf7(self,all)
   end
 
-    # File.dirname with a trailing slash
+  # File.dirname with a trailing slash
   def dirname
     return self if self.match(/\/$/)
     File.dirname(self) + "/"
@@ -167,15 +167,6 @@ class String
 
   def extname
     self.split('.').last
-  end
-
-  # return OpenSSL::Digest::MD5.new(self)
-  def md5
-    OpenSSL::Digest::MD5.new(self)
-  end
-
-  def sha1
-    OpenSSL::Digest::SHA1.new(self)
   end
 
   # write string to passed filename
@@ -224,6 +215,19 @@ class String
     self.gsub(/<\/?[^>]*>/, "")
   end
 
+  def head(c=5)
+    return nil if c <= 0
+    c -= 1
+    self.split("\n")[0..c].join("\n")
+  end
+
+  # return a literal regexp object for this string
+  #
+  # escape regexp operators
+  def to_regexp
+    return Regexp.new(self.gsub(/([\[\]\{\}\(\)\*\$\?])/) { |x| '\\' + x })
+  end
+
   # check if this string is a guid
   def is_guid?
     begin
@@ -234,18 +238,22 @@ class String
     return true
   end
 
-  # return a literal regexp object for this string
-  #
-  # escape regexp operators
-  def to_regexp
-    return Regexp.new(self.gsub(/([\[\]\{\}\(\)\*\$\?])/) { |x| '\\' + x })
+  def md5
+    Digest::MD5.digest(self).hexify
   end
 
-  def head(c=5)
-    return nil if c <= 0
-    c -= 1
-    self.split("\n")[0..c].join("\n")
+  def sha1
+    Digest::SHA1.digest(self).hexify
   end
+
+  def sha256
+    Digest::SHA256.digest(self).hexify
+  end
+
+  def sha512
+    Digest::SHA512.digest(self).hexify
+  end
+
 end
 
 class Array
