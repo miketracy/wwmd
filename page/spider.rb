@@ -44,7 +44,7 @@ module WWMD
         return false if not url =~ /#{@opts[:base_url]}/
       end
       @bypass.each { |b| return true if not (url =~ b).nil? }
-      @queued.push(url) if (@visited.detect { |v| v == url }.nil? and @queued.detect { |q| q == url }.nil?)
+      @queued.push(url) if (@visited.find { |v| v == url }.nil? and @queued.find { |q| q == url }.nil?)
       return true
     end
 

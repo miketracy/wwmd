@@ -23,8 +23,7 @@ module WWMD
           count += 1 if (i[1] == "Negotiate" || i[1] == "NTLM")
         end
       end
-      return true if count > 0
-      return false
+      return (count > 0)
     end
 
     # does this request have an authenticate header?
@@ -36,15 +35,13 @@ module WWMD
           count += 1
         end
       end
-      return true if count > 0
-      return false
+      return (count > 0)
     end
 
     # not sure why this is here
     def ntlm_perform(exp=nil)
       self.perform
-      return false if self.code != exp
-      return true
+      return (self.code == exp)
     end
 
     # perform a get usig NTLM

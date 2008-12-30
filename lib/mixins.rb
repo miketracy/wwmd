@@ -38,12 +38,12 @@ class Numeric
 
   # integer to ip address
   def int_to_ip
-    [24, 16, 8, 0].collect {|b| (self >> b) & 255}.join('.')
+    [24, 16, 8, 0].map { |b| (self >> b) & 255 }.join('.')
   end
 
   # integer to mac address [uses ':' as delimiter]
   def int_to_mac
-    [40,32,24,16,8,0].collect {|b| ((self >> b) & 255).to_s(16).rjust(2,"0")}.join(":")
+    [40,32,24,16,8,0].map { |b| ((self >> b) & 255).to_s(16).rjust(2,"0") }.join(":")
   end
 end
 
@@ -53,23 +53,22 @@ class String
 
   # ip address to int
   def ip_to_int
-    self.split('.').inject(0) {|total,value| (total << 8 ) + value.to_i}
+    self.split('.').inject(0) { |a,e| (a << 8) + e.to_i }
   end
 
   # mac address to int [uses ':' as delimiter]
   def mac_to_int
-    self.split(':').inject(0) {|total,value| (total << 8) + value.to_i(16)}
+    self.split(':').inject(0) { |a,e| (a << 8) + e.to_i(16) }
   end
 
   # return true or false for <tt>string.match</tt>  
   def contains?(rexp)
-    return false if self.match(rexp).nil?
-    return true
+    return !self.match(rexp).nil?
   end
 
   # strip the string and return true if empty
   def empty?
-    return true if self.strip == ''
+    return self.strip == ''
   end
 
   # return everything in the string (url) before the first get param

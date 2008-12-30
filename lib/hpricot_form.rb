@@ -32,11 +32,11 @@ module Hpricot
     end
 
     def fields
-      @fields ||= (hdoc.search("//input[@name]") + hdoc.search("//select[@name]") + hdoc.search("//textarea")).collect {|x| Field.new(x)}
+      @fields ||= (hdoc.search("//input[@name]") + hdoc.search("//select[@name]") + hdoc.search("//textarea")).map { |x| Field.new(x) }
     end
 
     def field_names
-      fields.collect{ |x| x.get_attribute("name") }
+      fields.map { |x| x.get_attribute("name") }
     end
 
     def action

@@ -264,48 +264,20 @@ module WWMD
       return ret
     end
 
+    def has_links?;    return !@links.empty?;     end
+    def has_jlinks?;   return !@jlinks.empty?;    end
+    def has_form?;     return !(@forms.size < 1); end
+    def has_comments?; return !@comments.empty?;  end
+
     # return page size in bytes
     def size
       return self.body_data.size
     end
 
-    # does this page have links?
-    def has_links?
-      return false if @links.empty?
-      return true
-    end
-
-    # does this page have form(s)?
-    def has_form?
-      return false if @forms.size < 1
-      return true
-    end
-
-    # does this page have javascript includes?
-    def has_jlinks?
-      begin
-        return false if @jlinks.empty?
-      rescue => e
-        putw "WARN: error gtting javascript #{e.inspect}"
-        return false
-      end
-      return true
-    end
-
-    def has_comments?
-      begin
-        return false if @comments.empty?
-      rescue => e
-        putw "WARN: error getting comments #{e.inspect}"
-        return false
-      end
-      return true
-    end
-
     # YYYY: not implemented
     #
     # does this page have GET params?
-    def has_params?
+    def has_params?#:nodoc:
       return false
     end
 
@@ -363,7 +335,7 @@ module WWMD
 
     # grep for regexp and remove leading whitespace
     def grep(reg)
-      self.body_data.grep(reg).collect! { |i| i.gsub(/^\s+/, "") }
+      self.body_data.grep(reg).map { |i| i.gsub(/^\s+/, "") }
     end
 
     # return this page's form (at index id) as a FormArray
