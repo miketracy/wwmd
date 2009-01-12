@@ -151,9 +151,7 @@ module WWMD
         iform = nil
       end
       self.clear_data
-      self.clear_header("Expect")
-      self.clear_header("X-Forwarded-For")
-      self.clear_header("Content-length")
+      ["Expect","X-Forwarded-For","Content-length"].each { |s| self.clear_header(s) }
       self.headers["Referer"] = self.cur if self.use_referer
       if iform == nil
         if not self.form.empty?
@@ -165,11 +163,10 @@ module WWMD
         sform = iform.clone             # clone the form so that we don't change the original
       end
       sform.escape_all!(reg)
-      if sform != ''
-        self.http_post(sform.to_post)
-        self.post_data = sform.to_post
-      else
+      if sform.empty?
         self.http_post('')
+      else
+        self.http_post(self.post_data = sform.to_post)
       end
       begin
         self.set_data
@@ -194,7 +191,7 @@ module WWMD
     # override for Curl::Easy.perform
     #
     # if the passed url string doesn't contain an fully qualified
-        # path, we'll guess and prepend opts[:base_url]
+    # path, we'll guess and prepend opts[:base_url]
     #
     # returns: <tt>array [ code, body_data.size ]</tt>
     def get(url=nil)
@@ -207,26 +204,6 @@ module WWMD
       self.set_data
       return [self.code, self.body_data.size]
     end
-
-=begin
-# Curl::Easy doesn't do other verbs.  Looking into RFuzz::HttpClient and Net/HTTP
-#    def head(url=nil)
-#      self.url = url if not url.nil?
-#      self.http_head
-#      self.set_data
-#      return [self.code, self.header_data.size]
-#    end
-#
-#    def put(path,data)
-#      hobj = Net::HTTP.new
-#      ret = hobj.send_request('PUT',path,data)
-#      putx ret
-#      self.url = url if not url.nil?
-#      self.http_put
-#      self.set_data
-#      return [self.code, self.body.size]
-#    end
-=end
 
 #:section: Reporting helper methods
 # These are methods that generate data for a parsed page
@@ -248,14 +225,10 @@ module WWMD
     end
 
     # return a string of flags:
-    # Ll:: page has links
-    # Jj:: page has javascript includes
-    # Ff:: page has forms
-    #--
-    # Ee:: page has form fields
-    # Pp:: page has GET params
-    #++
-    # Cc:: page has comments
+    # Ll links
+    # Jj javascript includes
+    # Ff forms
+    # Cc comments
     def report_flags
       self.has_links?      ? ret  = "L" : ret  = "l"
       self.has_jlinks?     ? ret += "J" : ret += "j"
@@ -272,13 +245,6 @@ module WWMD
     # return page size in bytes
     def size
       return self.body_data.size
-    end
-
-    # YYYY: not implemented
-    #
-    # does this page have GET params?
-    def has_params?#:nodoc:
-      return false
     end
 
 #:section: Other methods
@@ -373,6 +339,7 @@ module WWMD
     def setbase(url=nil)
       return nil if url.nil?
       self.opts[:base_url] = url
+      self.base_url = url
     end
 
     # return md5sum for self.body_data
@@ -400,7 +367,7 @@ module WWMD
           ret << x[1]
         end
       end
-      ret
+      return ret
     end
 
 #:section: Data callbacks and method_missing

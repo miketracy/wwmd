@@ -24,7 +24,7 @@ module WWMD
     end
 
     def get(attr=nil)
-      @elems.map { |x| x.get_attribute(attr) }.reject { |y| y.nil? }
+      @elems.map { |x| x[attr] }.reject { |y| y.nil? }
     end
 
     #
@@ -32,11 +32,11 @@ module WWMD
     def form
       ret = {}
       @elems.map do |x|
-        name  = x.get_attribute(:name)
-        id    = x.get_attribute(:id)
-        value = x.get_attribute(:value)
-        type  = x.get_attribute(:type)
+        name  = x['name']
+        id    = x['id']
         next if (name.nil? && id.nil?)
+        value = x['value']
+        type  = x['type']
         ret[name] = value
         ret[id] = value if ((id || name) != name)
       end

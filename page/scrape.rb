@@ -68,7 +68,7 @@ module WWMD
     def urls_from_xpath(xpath,attr)
       ret = []
       @hdoc.search(xpath).each do |elem|
-        url = elem.get_attribute(attr)
+        url = elem[attr]
         next if url.empty?
         ret << url.strip
       end
@@ -120,14 +120,14 @@ module WWMD
 
       # <meta> refresh
       @hdoc.search("//meta").each do |meta|
-        next if meta.get_attribute("http_equiv") != "refresh"
-        @links << meta.get_attribute("content").split(/=/)[1].strip
+        next if meta['http-equiv'] != "refresh"
+        @links << meta['content'].split(/=/)[1].strip
       end
 
       # add urls from onclick handlers
       @hdoc.search("*[@onclick]").each do |onclick|
         LINKS_REGEXP.each do |re|
-          self.urls_from_regexp(onclick.get_attribute("onclick"),re).each do |url|
+          self.urls_from_regexp(onclick['onclick'],re).each do |url|
             @links << url
           end
         end
@@ -152,7 +152,7 @@ module WWMD
     # scrape the page for <script src=""> tags
     def for_javascript_links
       urls = []
-      @hdoc.search("//script[@src]").each { |tag| urls << tag.get_attribute("src") }
+      @hdoc.search("//script[@src]").each { |tag| urls << tag['src'] }
       urls.reject! { |url| File.extname(url).clip != ".js" }
       return urls
     end
@@ -164,9 +164,9 @@ module WWMD
 
     # scrape the page for a meta refresh tag and return the url from the contents attribute or nil
     def for_meta_refresh
-      has_mr = @hdoc.search("//meta").map { |x| x.get_attribute('http-equiv') }.include?('Refresh')
+      has_mr = @hdoc.search("//meta").map { |x| x['http-equiv'] }.include?('Refresh')
       if has_mr
-        urls = @hdoc.search("//meta[@content]").map { |x| x.get_attribute('content').split(";",2)[1] }
+        urls = @hdoc.search("//meta[@content]").map { |x| x['content'].split(";",2)[1] }
         if urls.size > 1
           STDERR.puts "PARSE ERROR: more than one meta refresh tag"
           return "ERR"

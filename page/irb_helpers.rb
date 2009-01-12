@@ -81,7 +81,7 @@ module WWMD
     end
 
     def onclicks
-      self.search("//*[@onclick]").each { |x| puts x.get_attribute('onclick') }
+      self.search("//*[@onclick]").each { |x| puts x[:onclick] }
       nil
     end
 

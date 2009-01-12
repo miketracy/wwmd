@@ -41,7 +41,7 @@ module WWMD
     def push_url(url)
       return false if _check_ignore(url)
       if @local_only
-        return false if not url =~ /#{@opts[:base_url]}/
+        return false if !(url =~ /#{@opts[:base_url]}/)
       end
       @bypass.each { |b| return true if not (url =~ b).nil? }
       @queued.push(url) if (@visited.find { |v| v == url }.nil? and @queued.find { |q| q == url }.nil?)

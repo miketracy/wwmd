@@ -31,6 +31,7 @@ module Hpricot
       hdoc.send(*args)
     end
 
+    alias_method :old_fields, :fields
     def fields
       @fields ||= (hdoc.search("//input[@name]") + hdoc.search("//select[@name]") + hdoc.search("//textarea")).map { |x| Field.new(x) }
     end

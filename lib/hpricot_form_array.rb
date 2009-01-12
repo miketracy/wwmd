@@ -19,15 +19,15 @@ module Hpricot
         # this first one is an array of field objects
         if fields.class == Array
           fields.each do |f|
-            name = f.get_attribute("name")
+            name = f[:name]
             if self.name_exists(name)
-              if f.get_attribute("type") == "hidden"
+              if f[:type] == "hidden"
                 self.set name,f.get_value
-              elsif f.get_attribute("type") == "checkbox" and f.to_html.grep(/checked/) != ''
+              elsif f[:type] == "checkbox" and f.to_html.grep(/checked/) != ''
                 self.set name,f.get_value
               end
             else
-              self << [ f.get_attribute("name"),f.get_value ]
+              self << [ f[:name],f.get_value ]
             end
           end
         elsif fields.class == Hash
