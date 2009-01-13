@@ -35,7 +35,7 @@ module WWMD
         a_path = tpath.dirname.split("/").reject { |x| x.empty? }
       end
       @location = a_path.shift
-      a_path = [] if !(@actual =~ (/^\//)).nil?
+      a_path = [] if (@actual =~ (/^\//))
       b_path = @actual.split("/").reject { |x| x.empty? }
       a_path.pop if (a_path[-1] =~ /^\?/).kind_of?(Fixnum) && !b_path.empty?
       c_path = (a_path + @actual.split("/").reject { |x| x.empty? }).flatten

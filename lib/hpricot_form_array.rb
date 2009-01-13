@@ -215,7 +215,7 @@ module Hpricot
     alias add_state add_viewstate#:nodoc:
 
     # remove form elements with null values
-    def remove_nulls
+    def remove_nulls!
       self.delete_if { |x| x[1].to_s.empty? || x[1].nil? }
     end
 

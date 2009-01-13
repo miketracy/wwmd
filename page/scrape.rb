@@ -121,7 +121,8 @@ module WWMD
       # <meta> refresh
       @hdoc.search("//meta").each do |meta|
         next if meta['http-equiv'] != "refresh"
-        @links << meta['content'].split(/=/)[1].strip
+        next if (content = meta['content'].split(/=/)[1]).nil?
+        @links << content.strip
       end
 
       # add urls from onclick handlers

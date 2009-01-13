@@ -43,7 +43,7 @@ module WWMD
       if @local_only
         return false if !(url =~ /#{@opts[:base_url]}/)
       end
-      @bypass.each { |b| return true if not (url =~ b).nil? }
+      @bypass.each { |b| return true if (url =~ b) }
       @queued.push(url) if (@visited.find { |v| v == url }.nil? and @queued.find { |q| q == url }.nil?)
       return true
     end
@@ -111,7 +111,7 @@ module WWMD
     end
 
     def _check_ignore(url)
-      @ignore.each { |x| return true if !(url =~ x).nil? }
+      @ignore.each { |x| return true if (url =~ x) }
       return false
     end
   end
