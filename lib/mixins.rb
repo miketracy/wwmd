@@ -1,4 +1,4 @@
-w#!/usr/bin/env ruby
+#!/usr/bin/env ruby
 =begin rdoc
 :include:../sig.do
 
