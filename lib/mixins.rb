@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+w#!/usr/bin/env ruby
 =begin rdoc
 :include:../sig.do
 
@@ -179,7 +179,7 @@ class String
 
   # parse passed GET param string into a form and return the FormArray object
   def to_form
-    ret = FormArray.new
+    ret = Nokogiri::FormArray.new
     self.split("&").each do |x|
       y = x.split("=",2)
       ret.extend!(y[0].to_s,y[1].to_s)
