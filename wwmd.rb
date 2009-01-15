@@ -1,20 +1,16 @@
 #!/usr/bin/env ruby
 #:include:sig.do
 
-#IRB.conf[:IRB_NAME] = "wwmd"
-
 # third-party
 require 'rubygems'
 require 'ruby-debug'
 require 'curb'
-require 'hpricot'
-Hpricot.buffer_size = 262144
-include Hpricot
+require 'nokogiri'
+include Nokogiri
 require 'yaml'
 require 'fileutils'
 require 'base64'
 require 'optparse'
-#require 'openssl'
 require 'digest'
 require 'uri'
 require 'htmlentities'
@@ -35,8 +31,8 @@ require 'page/spider'
 
 require 'lib/encoding'
 require 'lib/guid' #fixed for mac
-require 'lib/hpricot_form'
-require 'lib/hpricot_form_array'
+require 'lib/nokogiri_form'
+require 'lib/nokogiri_form_array'
 require 'lib/html2text'
 require 'lib/mixins'
 require 'lib/mixins_extends'

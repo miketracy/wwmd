@@ -8,7 +8,7 @@ module WWMD
     attr_accessor :elems
 
     @cobj  = '' # wwmd object
-    @elems = '' # array of Hpricot elems parse out by self.new()
+    @elems = '' # array of elems parse out by self.new()
 
     def initialize(*args)
       @cobj = args.shift

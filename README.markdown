@@ -28,5 +28,6 @@ check the wiki regularly.
 * rubygems
 * ruby-debug
 * curb
-* hpricot
+* nokogiri
+* hpricot (for the time being)
 * htmlentities

@@ -2,20 +2,20 @@
 =begin rdoc
 :include:../sig.do
 
-mixins for the Hpricot module
+mixins for Nokogiri
   Form
   Field
   FormArray
 =end
 
-module Hpricot
-  # == original author
+module Nokogiri
+  # == original author of hpricot_form
   #
   #  Chew Choon Keat <choonkeat at gmail>
   #  http://blog.yanime.org/
   #  19 July 2006
   #
-  # updated by mtracy at matasano.com for use with WWMD
+  # updated by mtracy at matasano.com for use with Nokogiri and WWMD
   #
   class Form
     attr_accessor :hdoc
@@ -33,7 +33,7 @@ module Hpricot
 
     alias_method :old_fields, :fields
     def fields
-      @fields ||= (hdoc.search("//input[@name]") + hdoc.search("//select[@name]") + hdoc.search("//textarea")).map { |x| Field.new(x) }
+      @fields ||= (hdoc.search("//input[@name]","//select[@name]","//textarea")).map { |x| Field.new(x) }
     end
 
     def field_names

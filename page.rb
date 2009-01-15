@@ -11,7 +11,7 @@ module WWMD
   attr_reader   :last_error
   attr_reader   :links         # array of links (urls)
   attr_reader   :jlinks        # array of included javascript files
-  attr_reader   :fields        # array of Hpricot::Field objects
+  attr_reader   :fields        # array of Field objects
   attr_reader   :spider        # spider object
   attr_reader   :scrape        # scrape object
   attr_reader   :urlparse      # urlparse object
@@ -98,7 +98,7 @@ module WWMD
       end
       @jlinks = @scrape.for_javascript_links
       @forms = []
-      self.search("//form").each { |f| @forms << Hpricot::Form.new(f) }
+      self.search("//form").each { |f| @forms << Form.new(f) }
       @spider.add(self.last_effective_url,@links)
       return [self.code,self.page_status,self.body_data.size]
     end
@@ -250,9 +250,7 @@ module WWMD
 #:section: Other methods
 
     def all_tags#:nodoc:
-      return self.search("//").map { |x|
-        x if x.class == Hpricot::Elem
-      }.reject! { |y| y.nil? }.map { |z| z.namex }
+      return self.search("*").map { |x| x.name }
     end
 
     # return MD5 for DOM fingerprint
@@ -319,9 +317,9 @@ module WWMD
       return @urlparse.parse(self.last_effective_url,act)
     end
 
-    # return an array of Hpricot::Element objects for an xpath search
+    # return an array of Element objects for an xpath search
     def search(xpath)
-      return Hpricot(self.body_data).search(xpath)
+      self.scrape.hdoc.search(xpath)
     end
 
     alias get_tags search#:nodoc:

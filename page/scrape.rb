@@ -34,9 +34,9 @@ module WWMD
     @warn     = true
 
     # create a new scrape object using passed HTML
-    def initialize(page='')
+    def initialize(page='<>')
       @page = page
-      @hdoc = Hpricot(@page)
+      @hdoc = Nokogiri::HTML(@page)
       @links = Array.new
       @debug = false
       @warn  = true
@@ -45,7 +45,7 @@ module WWMD
     # reset this scrape object (called by WWMD::Page)
     def reset(page)
       @page = page
-      @hdoc = Hpricot(@page)
+      @hdoc = Nokogiri::HTML(@page)
       @links = Array.new
     end
 

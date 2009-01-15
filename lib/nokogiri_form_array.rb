@@ -10,8 +10,7 @@ Some of the methods in here are kept for backward compat before the refactor
 and now everything in this array should be accessed with []= and []
 =end
 
-#
-module Hpricot
+module Nokogiri
   class FormArray < Array
 
     def initialize(fields=nil)
@@ -19,15 +18,15 @@ module Hpricot
         # this first one is an array of field objects
         if fields.class == Array
           fields.each do |f|
-            name = f[:name]
+            name = f['name']
             if self.name_exists(name)
-              if f[:type] == "hidden"
+              if f['type'] == "hidden"
                 self.set name,f.get_value
-              elsif f[:type] == "checkbox" and f.to_html.grep(/checked/) != ''
+              elsif f['type'] == "checkbox" and f.to_html.grep(/checked/) != ''
                 self.set name,f.get_value
               end
             else
-              self << [ f[:name],f.get_value ]
+              self << [ f['name'],f.get_value ]
             end
           end
         elsif fields.class == Hash
