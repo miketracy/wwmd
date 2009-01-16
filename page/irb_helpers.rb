@@ -61,9 +61,9 @@ module WWMD
 
     alias dump dump_body#:nodoc:
 
-    # IRB: return the page filtered through html2text
+    # IRB: puts the page filtered through html2text
     def to_text
-      HTML2Text::html2text(self.body_data)
+      puts html2text
     end
 
     alias text_data to_text#:nodoc:
