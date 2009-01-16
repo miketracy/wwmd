@@ -15,7 +15,7 @@ module WWMD
                  'h1','h2','h3','h4','h5','h6','p','pre','tr','var',]
   LISTTAGS =    ['dir','dl','menu','ol','ul']
   ITEMTAGS =    ['li','dt']
-  SPECIALTAGS = ["br","hr"]
+  SPECIALTAGS = ['br','hr']
 
   class Page
     def html2text
