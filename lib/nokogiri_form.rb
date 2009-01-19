@@ -50,7 +50,7 @@ module Nokogiri
       return nil
     end
 
-    alias show report
+    alias_method :show, :report
 
     def to_form_array
       FormArray.new(self.fields)
@@ -66,8 +66,8 @@ module Nokogiri
       self._value.nil? ? self.get_attribute("value") : self._value
     end
 
-    alias get_value value #:nodoc:
-    alias fvalue value #:nodoc:
+    alias_method :get_value, :value #:nodoc:
+    alias_method :fvalue, :value #:nodoc:
 
     def fname
       self.get_attribute('name')

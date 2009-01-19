@@ -12,7 +12,7 @@ module WWMD
       return nil
     end
 
-    alias delete_header clear_header#:nodoc:
+    alias_method :delete_header, :clear_header#:nodoc:
 
     # clear all headers
     def clear_headers
@@ -53,7 +53,7 @@ module WWMD
       self.set_headers
     end
 
-    alias set_default default_headers
+    alias_method :set_default, :default_headers
 
     # set headers from text
     def headers_from_array(arr)

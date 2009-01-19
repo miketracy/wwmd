@@ -56,16 +56,16 @@ module Nokogiri
       self.map { |x| x.first }.flatten.include?(key)
     end
 
-    alias name_exists include?#:nodoc:
-    alias name_exists? include?#:nodoc:
-    alias has_key? include?#:nodoc:
+    alias_method :name_exists,  :include?#:nodoc:
+    alias_method :name_exists?, :include?#:nodoc:
+    alias_method :has_key?,     :include?#:nodoc:
 
     # add key/value pairs to form
     def add(key,value)
       self << [key,value]
     end
 
-    alias extend! add #:nodoc
+    alias_method :extend!, :add #:nodoc (this is here for backward compat)
 
     # key = Fixnum set value at index key
     # key = String find key named string and set value
@@ -111,8 +111,8 @@ module Nokogiri
       end
     end
 
-    alias set_value set_value!
-    alias set set_value!
+    alias_method :set_value, :set_value!
+    alias_method :set, :set_value!
 
     def get_value(key)
       if key.class == Fixnum
@@ -126,23 +126,23 @@ module Nokogiri
       return nil
     end
 
-    alias get get_value
+    alias_method :get, :get_value
 
     def setall!(value)
       self.each_index { |i| self.set_value!(i,value) }
     end
 
-    alias setall setall!#:nodoc:
-    alias set_all! setall!#:nodoc:
-    alias set_all setall!#:nodoc
+    alias_method :setall,   :setall!#:nodoc:
+    alias_method :set_all!, :setall!#:nodoc:
+    alias_method :set_all,  :setall!#:nodoc:
 
     # delete all key = value pairs from self where key = key
     def delete_key(key)
       self.reject! { |x,y| x == key }
     end
 
-    alias delete_keys! delete_key #:nodoc:
-    alias delete_key! delete_key #:nodoc:
+    alias_method :delete_keys!, :delete_key #:nodoc:
+    alias_method :delete_key!,  :delete_key #:nodoc:
 
     # escape form keys in place
     def escape_keys!(reg=WWMD::ESCAPE[:url])
@@ -162,14 +162,14 @@ module Nokogiri
       self.map! { |x,y| [x,y.escape(reg)] }
     end
 
-    alias escape_all escape_all!#:nodoc:
+    alias_method :escape_all, :escape_all!#:nodoc:
 
     # unescape all form values in place
     def unescape_all!
       self.map! { |x,y| [x,y.unescape] }
     end
 
-    alias unescape_all unescape_all!#:nodoc:
+    alias_method :unescape_all, :unescape_all!#:nodoc:
 
     # convert form into a post parameters string
     def to_post
@@ -211,7 +211,7 @@ module Nokogiri
       return nil
     end
 
-    alias add_state add_viewstate#:nodoc:
+#    alias_method, :add_state, :add_viewstate#:nodoc:
 
     # remove form elements with null values
     def remove_nulls!
@@ -248,7 +248,7 @@ module Nokogiri
     def fingerprint
       return self.map { |k,v| k }.sort.to_s.md5
     end
-    alias fp fingerprint #:nodoc:
+    alias_method :fp, :fingerprint #:nodoc:
 
   end
 end

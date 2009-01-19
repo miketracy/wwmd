@@ -11,7 +11,6 @@ module WWMD
   attr_reader   :last_error
   attr_reader   :links         # array of links (urls)
   attr_reader   :jlinks        # array of included javascript files
-  attr_reader   :fields        # array of Field objects
   attr_reader   :spider        # spider object
   attr_reader   :scrape        # scrape object
   attr_reader   :urlparse      # urlparse object
@@ -217,7 +216,7 @@ module WWMD
       return "OK"
     end
 
-    alias status page_status#:nodoc:
+    alias_method :status, :page_status#:nodoc:
 
     # return value of @logged_in
     def logged_in?
@@ -258,7 +257,7 @@ module WWMD
     def fingerprint
       self.all_tags.to_s.md5
     end
-    alias fprint fingerprint
+    alias_method :fp, :fingerprint #:nodoc:
 
     # set link using an integer link from self.report
     #--
@@ -273,20 +272,21 @@ module WWMD
       @links[index]
     end
 
-    alias l get_link#:nodoc:
+    alias_method :link, :get_link #:nodoc:
+    alias_method :l, :get_link #:nodoc:
 
-    # alias for body_data
+    # alias_method for body_data
     def raw
       self.body_data
     end
 
-    # alias for last_effective_url
+    # alias_method for last_effective_url
     def current_url
       self.last_effective_url
     end
 
-    alias current current_url
-    alias cur current_url
+    alias_method :current, :current_url
+    alias_method :cur, :current_url
 
     # the last http response code
     def code
@@ -322,14 +322,12 @@ module WWMD
       self.scrape.hdoc.search(xpath)
     end
 
-    alias get_tags search#:nodoc:
-
     # return an array of inner_html for each <script> tag encountered
     def dump_scripts
       self.get_tags("//script").map { |s| s.inner_html if s.inner_html.strip != '' }
     end
 
-    alias scripts dump_scripts
+    alias_method :scripts, :dump_scripts
 
 #:section: Input and Output Helpers
 

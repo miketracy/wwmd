@@ -138,7 +138,7 @@ class String
       out.string
     end
   end
-  alias dedump dehexdump
+  alias_method :dedump, :dehexdump
 
   # Does string "start with" dat?
   # no clue whether/when this is faster than a regex, but it is easier 

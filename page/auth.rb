@@ -39,7 +39,7 @@ module WWMD
     end
 
     # not sure why this is here
-    def ntlm_perform(exp=nil)
+    def ntlm_perform(exp=nil)#:nodoc:
       self.perform
       return (self.code == exp)
     end
@@ -61,8 +61,6 @@ module WWMD
       self.clear_header('Authorization')
       return self.code
     end
-
-    alias nget ntlm_get
 
 #:startdoc:
 

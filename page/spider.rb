@@ -59,7 +59,7 @@ module WWMD
       return queued.shift
     end
 
-    alias next get_next
+    alias_method :next, :get_next
 
     # more elements in the queue?
     def next?
@@ -82,7 +82,7 @@ module WWMD
       end
     end
 
-    alias v show_visited
+    alias_method :v, :show_visited
 
     # return the current queue (or the entry in the queue at [id]
     def show_queue(id=nil)
@@ -94,7 +94,7 @@ module WWMD
       end
     end
 
-    alias q show_queue
+    alias_method :q, :show_queue
 
     # add url to queue
     def add(url='',links=[])

@@ -26,7 +26,7 @@ module WWMD
       return nil
     end
 
-    alias show report#:nodoc:
+    alias_method :show, :report#:nodoc:
 
     # IRB: display summary of what has been parsed from this page
     def summary
@@ -35,16 +35,14 @@ module WWMD
       return nil
     end
 
-    alias sum summary#:nodoc:
-
     # IRB: display current headers
     def request_headers
       self.headers.each_pair { |k,v| putx "#{k}: #{v}" }
       return nil
     end
 
-    alias show_headers request_headers#:nodoc:
-    alias req_headers request_headers#:nodoc:
+    alias_method :show_headers, :request_headers#:nodoc:
+    alias_method :req_headers, :request_headers#:nodoc:
 
     # IRB: display response headers
     def response_headers
@@ -52,27 +50,18 @@ module WWMD
       return nil
     end
 
-    alias resp_headers response_headers#:nodoc:
+    alias_method :resp_headers, :response_headers#:nodoc:
 
     # display self.body_data
     def dump_body
       putx self.body_data
     end
 
-    alias dump dump_body#:nodoc:
+    alias_method :dump, :dump_body#:nodoc:
 
     # IRB: puts the page filtered through html2text
-    def to_text
-      puts html2text
-    end
-
-    alias text_data to_text#:nodoc:
-
-    # IRB: alias to directly display page.text_data
-    def text
-      putx self.text_data
-      nil
-    end
+    def to_text; putx self.html2text; end
+    def text; self.html2text; end
 
     # IRB: display a human readable report of all forms contained in page.body_data
     def all_forms
