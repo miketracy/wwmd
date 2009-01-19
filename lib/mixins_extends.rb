@@ -10,6 +10,27 @@ HEXCHARS = [("0".."9").to_a, ("a".."f").to_a].flatten
 #-----------------------------------------------------------------------------
 # Mixins and class-specific items
 
+class Fixnum#:nodoc:
+  def to_l32; [self].pack "L"; end
+  def to_b32; [self].pack "N"; end
+  def to_l16; [self].pack "v"; end
+  def to_b16; [self].pack "n"; end
+  def to_u8;  [self].pack "C"; end
+  def to_l8;  chr; end
+  def to_n8;  chr; end
+  alias to_n32 to_b32
+  alias to_n16 to_b16
+  def to_n32; [self].pack "N"; end
+  def to_n16; [self].pack "n"; end
+
+  def self.from_l8(str); str[0]; end
+  def self.from_l16(str); (str.unpack "v")[0]; end
+  def self.from_l32(str); (str.unpack "V")[0]; end
+  def self.from_n8(str); str[0]; end
+  def self.from_n16(str); (str.unpack "n")[0]; end
+  def self.from_n32(str); (str.unpack "N")[0]; end
+end
+
 class String
 
   # shortcut for hex sanity with regex
