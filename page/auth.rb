@@ -48,7 +48,7 @@ module WWMD
     def ntlm_get(url=nil?,debug=false)
       self.clear_header('Authorization')
       nobj = WWMDNTLM.new(self.opts)
-      self.url = url if not url.nil?
+      self.url = @urlparse.parse(self.opts[:base_url],url) if not url.nil?
       self.perform
       return "This request does not appear to require NTLM" if not self.ntlm?
       self.headers['Authorization'] = nobj.type_1_msg
