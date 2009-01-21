@@ -1,12 +1,20 @@
 #!/usr/bin/env ruby
 #:include:sig.do
 
+module WWMD
+  PARSER = :hpricot  # :nokogiri || :hpricot
+end
 # third-party
 require 'rubygems'
 require 'ruby-debug'
 require 'curb'
-require 'nokogiri'
-include Nokogiri
+if WWMD::PARSER == :nokogiri
+  require 'nokogiri'
+  include Nokogiri
+else
+  require 'hpricot'
+  include Hpricot
+end
 require 'yaml'
 require 'fileutils'
 require 'base64'
@@ -26,14 +34,24 @@ require 'page/auth'
 require 'page/utils'
 require 'page/config'
 require 'page/urlparse'
-require 'page/scrape'
+if WWMD::PARSER == :nokogiri
+  require 'page/nokogiri_scrape'
+else
+  require 'page/hpricot_scrape'
+end
 require 'page/spider'
 
 require 'lib/encoding'
 require 'lib/guid' #fixed for mac
-require 'lib/nokogiri_form'
-require 'lib/nokogiri_form_array'
-require 'lib/html2text'
+if WWMD::PARSER == :nokogiri
+  require 'lib/nokogiri_form'
+  require 'lib/nokogiri_form_array'
+  require 'lib/nokogiri_html2text'
+else
+  require 'lib/hpricot_form'
+  require 'lib/hpricot_form_array'
+  require 'lib/hpricot_html2text'
+end
 require 'lib/mixins'
 require 'lib/mixins_extends'
 
