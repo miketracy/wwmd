@@ -179,7 +179,7 @@ class String
 
   # parse passed GET param string into a form and return the FormArray object
   def to_form
-    ret = Nokogiri::FormArray.new
+    ret = FormArray.new
     self.split("&").each do |x|
       y = x.split("=",2)
       ret.extend!(y[0].to_s,y[1].to_s)

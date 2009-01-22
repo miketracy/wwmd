@@ -15,7 +15,7 @@ module Hpricot
   #  http://blog.yanime.org/
   #  19 July 2006
   #
-  # updated by mtracy at matasano.com for use with Nokogiri and WWMD
+  # updated by mtracy at matasano.com for use with WWMD
   #
   class Form
     attr_accessor :hdoc
