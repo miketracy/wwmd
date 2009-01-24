@@ -218,6 +218,15 @@ module Nokogiri
       self.delete_if { |x| x[1].to_s.empty? || x[1].nil? }
     end
 
+    alias_method :squeeze!, :remove_nulls!
+
+    # remove form elements with null keys (for housekeeping returns)
+    def remove_null_keys!
+      self.delete_if { |x,y| x.to_s.empty? || x.nil? }
+    end
+
+    alias_method :squeeze_keys!, :remove_null_keys!
+
     # dump a web page containing a csrf example of the current FormArray
     def to_csrf(action)
       ret = ""

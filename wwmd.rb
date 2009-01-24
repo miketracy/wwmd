@@ -2,7 +2,7 @@
 #:include:sig.do
 
 module WWMD
-  PARSER = :hpricot  # :nokogiri || :hpricot
+  PARSER = :nokogiri  # :nokogiri || :hpricot
 end
 # third-party
 require 'rubygems'

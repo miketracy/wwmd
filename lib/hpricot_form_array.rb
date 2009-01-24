@@ -218,6 +218,8 @@ module Hpricot
       self.delete_if { |x| x[1].to_s.empty? || x[1].nil? }
     end
 
+    alias_method :squeeze! :remove_nulls!
+
     # dump a web page containing a csrf example of the current FormArray
     def to_csrf(action)
       ret = ""
