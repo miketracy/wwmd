@@ -10,10 +10,10 @@ require 'ruby-debug'
 require 'curb'
 if WWMD::PARSER == :nokogiri
   require 'nokogiri'
-  include Nokogiri
+  HDOC = Nokogiri::HTML
 else
   require 'hpricot'
-  include Hpricot
+  HDOC = Hpricot
 end
 require 'yaml'
 require 'fileutils'
@@ -34,24 +34,14 @@ require 'page/auth'
 require 'page/utils'
 require 'page/config'
 require 'page/urlparse'
-if WWMD::PARSER == :nokogiri
-  require 'page/nokogiri_scrape'
-else
-  require 'page/hpricot_scrape'
-end
+require 'page/scrape'
 require 'page/spider'
 
 require 'lib/encoding'
 require 'lib/guid' #fixed for mac
-if WWMD::PARSER == :nokogiri
-  require 'lib/nokogiri_form'
-  require 'lib/nokogiri_form_array'
-  require 'lib/nokogiri_html2text'
-else
-  require 'lib/hpricot_form'
-  require 'lib/hpricot_form_array'
-  require 'lib/hpricot_html2text'
-end
+require 'lib/form'
+require 'lib/form_array'
+#require 'lib/html2text'
 require 'lib/mixins'
 require 'lib/mixins_extends'
 
