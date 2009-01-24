@@ -177,8 +177,24 @@ class String
     return fname
   end
 
+  def to_form_from_show
+    self.split("\n").map { |a|
+      key,val = a.split("=",2)
+      key = key.split(" ")[-1]
+      val = val.strip
+      ["#{key}=#{val}"]
+    }.join("&").to_form.squeeze_keys!
+  end
+
+  def mform
+    return self.gsub("\n","").to_form
+  end
+
   # parse passed GET param string into a form and return the FormArray object
   def to_form
+    if self.split("\n").size > 1
+      return self.to_form_from_show
+    end
     ret = FormArray.new
     self.split("&").each do |x|
       y = x.split("=",2)
