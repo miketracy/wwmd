@@ -11,9 +11,11 @@ require 'curb'
 if WWMD::PARSER == :nokogiri
   require 'nokogiri'
   HDOC = Nokogiri::HTML
+  require 'lib/nokogiri_html2text'
 else
   require 'hpricot'
   HDOC = Hpricot
+  require 'lib/hpricot_html2text'
 end
 require 'yaml'
 require 'fileutils'
