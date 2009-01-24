@@ -366,6 +366,10 @@ module WWMD
       return ret
     end
 
+    def time
+      self.total_time
+    end
+
 #:section: Data callbacks and method_missing
 
     # callback for <tt>self.on_body</tt>
