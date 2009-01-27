@@ -23,17 +23,18 @@ module WWMD
               if f['type'] == "hidden"
                 self.set name,f.get_value
               elsif f['type'] == "checkbox" and f.to_html.grep(/checked/) != ''
-                self.set name,f.get_value
+                self[name] = f.get_value
               end
             else
               self << [ f['name'],f.get_value ]
             end
           end
         elsif fields.class == Hash
-          fields.each_pair { |k,v| self.extend! k,v }
+          fields.each_pair { |k,v| self[k] = v }
         elsif fields.class == String
           fields.split("&").each do |f|
-            self.extend!(f.split("=")[0],f.split("=")[1])
+            k,v = f.split("=",2)
+            self[k] = v
           end
         end
       end

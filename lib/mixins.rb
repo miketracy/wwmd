@@ -97,6 +97,10 @@ class String
 
   def clopp; self.clop("?",true); end #:nodoc:
 
+  def clopa
+    return [self.clip,self.clop]
+  end
+
   # base 64 decode
   def b64d
     Base64.decode64(self)

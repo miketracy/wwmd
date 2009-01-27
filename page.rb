@@ -39,7 +39,7 @@ module WWMD
       @urlparse = URLParse.new()
       @inputs = Inputs.new(self)
       @logged_in = false
-      @use_referer = false
+#      @use_referer = false
       @body_data = ""
       @post_data = ""
       @comments = []

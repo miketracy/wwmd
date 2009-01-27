@@ -10,7 +10,7 @@ module WWMD
 
     def parse(base,actual)
       @proto = @location = @path = @script = @rpath = nil
-      @base = base
+      @base = base.to_s
       @actual = actual
       if self.has_proto?
         @base = @actual
@@ -29,6 +29,7 @@ module WWMD
 
     def make_me_path
       @proto,tpath = @base.split(":",2)
+      tpath ||= ""
       if @actual.empty?
         a_path = tpath.split("/").reject { |x| x.empty? }
       else
