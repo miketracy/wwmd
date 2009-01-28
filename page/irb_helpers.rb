@@ -10,6 +10,10 @@ module WWMD
 #:section: IRB helper methods
 
     def head(i=1)
+      if i.kind_of?(Range)
+        puts self.body_data.split("\n")[i].join("\n")
+        return nil
+      end
       puts self.body_data.head(i)
     end
 
