@@ -93,7 +93,7 @@ module WWMD
         c =~ /\[if lt IE \d/
       end
       @links = @scrape.for_links.map do |url|
-        @urlparse.parse(self.last_effective_url,url)
+        @urlparse.parse(self.last_effective_url,url).to_s
       end
       @jlinks = @scrape.for_javascript_links
       @forms = []
@@ -194,7 +194,7 @@ module WWMD
     #
     # returns: <tt>array [ code, body_data.size ]</tt>
     def get(url=nil)
-      self.url = @urlparse.parse(self.opts[:base_url],url) if not url.nil?
+      self.url = @urlparse.parse(self.opts[:base_url],url).to_s if not url.nil?
       self.perform
       if self.ntlm?
         putw "WARN: this page requires NTLM Authentication"
@@ -314,7 +314,7 @@ module WWMD
       id = 0 if id.nil?
       act = self.forms[id].action
       return self.last_effective_url if (act.nil? || act.empty?)
-      return @urlparse.parse(self.last_effective_url,act)
+      return @urlparse.parse(self.last_effective_url,act).to_s
     end
 
     # return an array of Element objects for an xpath search
