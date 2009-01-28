@@ -16,7 +16,8 @@ module WWMD
     attr_accessor :bypass
     attr_accessor :local_only
     attr_reader   :opts
-    attr_reader   :ignore
+    attr_accessor :ignore
+    attr_accessor :csrf_token
 
     DEFAULT_IGNORE = [
       /logoff/i,
@@ -31,6 +32,7 @@ module WWMD
       @queued  = []
       @bypass  = []
       @local_only = true
+      @csrf_token = nil
       if !opts[:spider_local_only].nil?
         @local_only = opts[:spider_local_only]
       end
@@ -40,6 +42,7 @@ module WWMD
     # push an url onto the queue
     def push_url(url)
       return false if _check_ignore(url)
+      url = _de_csrf(url)
       if @local_only
         return false if !(url =~ /#{@opts[:base_url]}/)
       end
@@ -98,7 +101,7 @@ module WWMD
 
     # add url to queue
     def add(url='',links=[])
-      @visited.push(url)
+      @visited.push(_de_csrf(url))
       links.each { |l| self.push_url l }
       return nil
     end
@@ -108,6 +111,15 @@ module WWMD
     # remember to set this up before calling any Page methods
     def set_ignore(arr)
       @ignore = arr
+    end
+
+    def _de_csrf(url)
+      return url if @csrf_token.nil?
+      act,params = url.clopa
+      form = params.to_form
+      return url if !form.has_key?(@csrf_token)
+      form[@csrf_token] = ''
+      url = act + form.to_get
     end
 
     def _check_ignore(url)
