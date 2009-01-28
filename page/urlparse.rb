@@ -2,13 +2,21 @@ module WWMD
   # yay for experiments in re-inventing the wheel
   class URLParse
     HANDLERS = [:https,:http,:ftp,:file]
-    attr_reader :proto,:location,:path,:script,:rpath
+    attr_reader :proto,:location,:path,:script,:rpath,:params
 
     def initialize()
       # nothing to see here, move along
     end
 
-    def parse(base,actual)
+    def parse(*args)
+      if args.size == 1
+        base = ""
+        actual = args.shift
+      else
+        base = args.shift
+        actual = args.shift
+      end
+#      base,actual = *args
       @proto = @location = @path = @script = @rpath = nil
       @base = base.to_s
       @actual = actual
@@ -19,12 +27,13 @@ module WWMD
 # does this work for http://location/?  probably not
       @base += "/" if (!@base.has_ext? || @base.split("/").size == 3)
       @rpath = make_me_path.join("/")
+      @params = @rpath.clop
       @path = "/" + @rpath
       if @rpath.has_ext?
         @path = "/" + @rpath.dirname
-        @script = @rpath.basename
+        @script = @rpath.basename.clip
       end
-      return "#{@proto}://#{@location}/#{rpath}"
+      self
     end
 
     def make_me_path
@@ -53,6 +62,9 @@ module WWMD
       return true if HANDLERS.include?(@actual.split(":").first.downcase.to_sym)
     end
 
+    def to_s
+      return "#{@proto}://#{@location}/#{rpath}"
+    end
   end
 end
 
