@@ -235,10 +235,14 @@ class String
     self.gsub(/<\/?[^>]*>/, "")
   end
 
+  # range or int
   def head(c=5)
-    return nil if c <= 0
-    c -= 1
-    self.split("\n")[0..c].join("\n")
+    if c.kind_of?(Range) then
+      range = c
+    else
+      range = (0..(c - 1))
+    end
+    self.split("\n")[range].join("\n")
   end
 
   # return a literal regexp object for this string
