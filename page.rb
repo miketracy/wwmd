@@ -313,7 +313,7 @@ module WWMD
     def action(id=nil)
       id = 0 if id.nil?
       act = self.forms[id].action
-      return self.last_effective_url if act.nil?
+      return self.last_effective_url if (act.nil? || act.empty?)
       return @urlparse.parse(self.last_effective_url,act)
     end
 
