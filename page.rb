@@ -33,7 +33,7 @@ module WWMD
       @scrape = Scrape.new
       @scrape.warn = opts[:scrape_warn] if !opts[:scrape_warn].nil?
       if opts.empty?
-        puts "Page initialized without opts"
+        putw "Page initialized without opts"
         @scrape.warn = false
       end
       @urlparse = URLParse.new()
@@ -124,7 +124,7 @@ module WWMD
         @curl_object.perform
       rescue => e
         @last_error = e
-        puts "WARN: #{e.class}" if !(e.class =~ /Curl::Err/).nil?
+        putw "WARN: #{e.class}" if !(e.class =~ /Curl::Err/).nil?
         self.logged_in = false
       end
       self.set_data

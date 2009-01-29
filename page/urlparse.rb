@@ -16,7 +16,6 @@ module WWMD
         base = args.shift
         actual = args.shift
       end
-#      base,actual = *args
       @proto = @location = @path = @script = @rpath = nil
       @base = base.to_s
       @actual = actual
@@ -60,6 +59,7 @@ module WWMD
 
     def has_proto?
       return true if HANDLERS.include?(@actual.split(":").first.downcase.to_sym)
+      return false
     end
 
     def to_s
