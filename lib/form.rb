@@ -85,7 +85,11 @@ module WWMD
       case ret.size
       when 0
         if name == "textarea"
-          hdoc.innerHTML
+          if PARSER == :nokogiri
+            hdoc.text
+          else
+            hdoc.innerHTML
+          end
         else
           hdoc.get_attribute("value") if (hdoc.get_attribute("checked") || !hdoc.get_attribute("type") =~ /radio|checkbox/)
         end
