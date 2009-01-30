@@ -20,7 +20,7 @@ module WWMD
     :xss     => /[^a-zA-Z0-9=?&()']/,
     :ltgt    => /[<>]/,
     :all     => /.*/,
-    :b64     => /[=+]/,
+    :b64     => /[=+\/]/,
     :none    => :none,
     :default => :default,
   }
