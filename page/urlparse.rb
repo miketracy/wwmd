@@ -2,7 +2,7 @@ module WWMD
   # yay for experiments in re-inventing the wheel
   class URLParse
     HANDLERS = [:https,:http,:ftp,:file]
-    attr_reader :proto,:location,:path,:script,:rpath,:params
+    attr_reader :proto,:location,:path,:script,:rpath,:params,:base_url,:fqpath
 
     def initialize()
       # nothing to see here, move along
@@ -32,6 +32,9 @@ module WWMD
         @path = "/" + @rpath.dirname
         @script = @rpath.basename.clip
       end
+      @script = "" if @script.nil?
+      @base_url = @proto + "://" + @location
+      @fqpath = @path + @script
       self
     end
 
