@@ -185,7 +185,7 @@ class String
     self.split("\n").map { |a|
       key,val = a.split("=",2)
       key = key.split(" ")[-1]
-      val = val.strip
+      val = val.strip if val
       ["#{key}=#{val}"]
     }.join("&").to_form.squeeze_keys!
   end
