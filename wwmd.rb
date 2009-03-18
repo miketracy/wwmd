@@ -10,7 +10,8 @@ require 'ruby-debug'
 require 'curb'
 if WWMD::PARSER == :nokogiri
   require 'nokogiri'
-  HDOC = Nokogiri::HTML
+#  HDOC = Nokogiri::HTML
+  HDOC = Nokogiri::XML
   require 'lib/nokogiri_html2text'
 else
   require 'hpricot'

@@ -121,7 +121,7 @@ module WWMD
       # <meta> refresh
       @hdoc.search("//meta").each do |meta|
         next if meta['http-equiv'] != "refresh"
-        next if (content = meta['content'].split(/=/)[1]).nil?
+        next if not (content = meta['content'].split(/=/)[1])
         @links << content.strip
       end
 

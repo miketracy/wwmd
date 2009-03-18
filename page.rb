@@ -28,10 +28,10 @@ module WWMD
 
     def initialize(opts={})
       @opts = opts.clone
-      DEFAULTS.each { |k,v| @opts[k] = v if opts[k].nil? }
+      DEFAULTS.each { |k,v| @opts[k] = v if opts[k] }
       @spider = Spider.new(opts)
       @scrape = Scrape.new
-      @scrape.warn = opts[:scrape_warn] if !opts[:scrape_warn].nil?
+      @scrape.warn = opts[:scrape_warn] if opts[:scrape_warn]
       if opts.empty?
         putw "Page initialized without opts"
         @scrape.warn = false
@@ -124,7 +124,7 @@ module WWMD
         @curl_object.perform
       rescue => e
         @last_error = e
-        putw "WARN: #{e.class}" if !(e.class =~ /Curl::Err/).nil?
+        putw "WARN: #{e.class}" if e.class =~ /Curl::Err/
         self.logged_in = false
       end
       self.set_data
@@ -194,7 +194,7 @@ module WWMD
     #
     # returns: <tt>array [ code, body_data.size ]</tt>
     def get(url=nil)
-      self.url = @urlparse.parse(self.opts[:base_url],url).to_s if not url.nil?
+      self.url = @urlparse.parse(self.opts[:base_url],url).to_s if url
       self.perform
       if self.ntlm?
         putw "WARN: this page requires NTLM Authentication"
@@ -304,14 +304,14 @@ module WWMD
 
     # return this page's form (at index id) as a FormArray
     def get_form(id=nil)
-      id = 0 if id.nil?
+      id = 0 if not id
       return nil if forms.empty?
       @forms[id].to_form_array
     end
 
     # return the complete url to the form action on this page
     def action(id=nil)
-      id = 0 if id.nil?
+      id = 0 if not id
       act = self.forms[id].action
       return self.last_effective_url if (act.nil? || act.empty?)
       return @urlparse.parse(self.last_effective_url,act).to_s
@@ -333,7 +333,7 @@ module WWMD
 
     # set self.opts[:base_url]
     def setbase(url=nil)
-      return nil if url.nil?
+      return nil if not url
       self.opts[:base_url] = url
       self.base_url = url
     end
@@ -374,7 +374,7 @@ module WWMD
 
     # callback for <tt>self.on_body</tt>
     def _body_cb(data)
-      @body_data << data if not data.nil?
+      @body_data << data if data
       return data.length.to_i
     end
 
