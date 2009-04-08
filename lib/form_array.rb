@@ -66,6 +66,12 @@ module WWMD
       self << [key,value]
     end
 
+    def clear_viewstate
+      self.each { |k,v|
+        self[k] = "" if k == "__VIEWSTATE"
+      }
+    end
+
     alias_method :extend!, :add #:nodoc (this is here for backward compat)
 
     # key = Fixnum set value at index key

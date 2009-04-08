@@ -2,6 +2,7 @@ module WWMD
   XSSFISH = "<;'\"}()[]>{"
 
   DEFAULTS = {
+    :base_url => "",
     :use_auth => true,
     :enable_cookies => true,
     :cookiejar => "./__cookiejar",

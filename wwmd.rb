@@ -2,6 +2,7 @@
 #:include:sig.do
 
 module WWMD
+  VERSION = "0.2.8"
   PARSER = :nokogiri  # :nokogiri || :hpricot
 end
 # third-party

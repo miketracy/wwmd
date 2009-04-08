@@ -31,6 +31,7 @@ module WWMD
       DEFAULTS.each { |k,v| @opts[k] = v if opts[k] }
       @spider = Spider.new(opts)
       @scrape = Scrape.new
+      @base_url ||= opts[:base_url]
       @scrape.warn = opts[:scrape_warn] if opts[:scrape_warn]
       if opts.empty?
         putw "Page initialized without opts"
