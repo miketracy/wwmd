@@ -28,7 +28,7 @@ module WWMD
 
     def initialize(opts={})
       @opts = opts.clone
-      DEFAULTS.each { |k,v| @opts[k] = v if opts[k] }
+      DEFAULTS.each { |k,v| @opts[k] = v if not opts[k] }
       @spider = Spider.new(opts)
       @scrape = Scrape.new
       @base_url ||= opts[:base_url]
@@ -40,7 +40,6 @@ module WWMD
       @urlparse = URLParse.new()
       @inputs = Inputs.new(self)
       @logged_in = false
-#      @use_referer = false
       @body_data = ""
       @post_data = ""
       @comments = []
