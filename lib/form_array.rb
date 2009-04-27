@@ -250,6 +250,10 @@ module WWMD
       return ret
     end
 
+    def keys
+      self.map { |k,v| k }
+    end
+
     def burpify #:nodoc:
       ret = self.clone
       ret.each_index do |i|

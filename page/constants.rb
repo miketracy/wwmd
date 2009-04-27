@@ -16,7 +16,7 @@ module WWMD
   }
 
   ESCAPE = {
-    :url     => /[^a-zA-Z0-9%]/,
+    :url     => /[^a-zA-Z0-9\-_%]/,
     :nalnum  => /[^a-zA-Z0-9]/,
     :xss     => /[^a-zA-Z0-9=?&()']/,
     :ltgt    => /[<>]/,
