@@ -13,11 +13,11 @@ if WWMD::PARSER == :nokogiri
   require 'nokogiri'
   HDOC = Nokogiri::HTML
 #  HDOC = Nokogiri::XML
-  require 'lib/nokogiri_html2text'
+  require 'nokogiri_html2text'
 else
   require 'hpricot'
   HDOC = Hpricot
-  require 'lib/hpricot_html2text'
+  require 'hpricot_html2text'
 end
 require 'yaml'
 require 'fileutils'
@@ -41,13 +41,13 @@ require 'page/urlparse'
 require 'page/scrape'
 require 'page/spider'
 
-require 'lib/encoding'
-require 'lib/guid' #fixed for mac
-require 'lib/form'
-require 'lib/form_array'
-#require 'lib/html2text'
-require 'lib/mixins'
-require 'lib/mixins_extends'
+require 'encoding'
+require 'guid' #fixed for mac
+require 'form'
+require 'form_array'
+#require 'html2text'
+require 'mixins'
+require 'mixins_extends'
 
 $stdout.sync = true
 
