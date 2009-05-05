@@ -1,24 +1,7 @@
-#!/usr/bin/env ruby
-#:include:sig.do
-
-module WWMD
-  VERSION = "0.2.8"
-  PARSER = :nokogiri  # :nokogiri || :hpricot
-end
 # third-party
 require 'rubygems'
 require 'ruby-debug'
 require 'curb'
-if WWMD::PARSER == :nokogiri
-  require 'nokogiri'
-  HDOC = Nokogiri::HTML
-#  HDOC = Nokogiri::XML
-  require 'nokogiri_html2text'
-else
-  require 'hpricot'
-  HDOC = Hpricot
-  require 'hpricot_html2text'
-end
 require 'yaml'
 require 'fileutils'
 require 'base64'
@@ -28,27 +11,67 @@ require 'uri'
 require 'htmlentities'
 require 'nkf'
 
-# here beginneth the libraries
-require 'page'
-require 'page/constants'
-require 'page/headers'
-require 'page/inputs'
-require 'page/irb_helpers'
-require 'page/auth'
-require 'page/utils'
-require 'page/config'
-require 'page/urlparse'
-require 'page/scrape'
-require 'page/spider'
+module WWMD
 
-require 'encoding'
-require 'guid' #fixed for mac
-require 'form'
-require 'form_array'
-#require 'html2text'
-require 'mixins'
-require 'mixins_extends'
+  # :stopdoc:
+  VERSION = "0.2.9"
+  PARSER = :nokogiri  # :nokogiri || :hpricot
+  LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
+  PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
+  # :startdoc:
 
-$stdout.sync = true
+  # Returns the version string for the library.
+  #
+  def self.version
+    VERSION
+  end
 
-module WWMD; end
+  # Returns the library path for the module. If any arguments are given,
+  # they will be joined to the end of the libray path using
+  # <tt>File.join</tt>.
+  #
+  def self.libpath( *args )
+    args.empty? ? LIBPATH : ::File.join(LIBPATH, args.flatten)
+  end
+
+  # Returns the lpath for the module. If any arguments are given,
+  # they will be joined to the end of the path using
+  # <tt>File.join</tt>.
+  #
+  def self.path( *args )
+    args.empty? ? PATH : ::File.join(PATH, args.flatten)
+  end
+
+  # Utility method used to require all files ending in .rb that lie in the
+  # directory below this file that has the same name as the filename passed
+  # in. Optionally, a specific _directory_ name can be passed in such that
+  # the _filename_ does not have to be equivalent to the directory.
+  #
+  def self.require_all_libs_relative_to( fname, dir = nil )
+    dir ||= ::File.basename(fname, '.*')
+    search_me = ::File.expand_path(
+        ::File.join(::File.dirname(fname), dir, '**', '*.rb'))
+
+    Dir.glob(search_me).sort.each do |rb|
+      next if rb =~ /_html2text/
+      require rb
+    end
+  end
+
+end  # module WWMD
+
+WWMD.require_all_libs_relative_to(__FILE__)
+
+# special case parser
+
+if WWMD::PARSER == :nokogiri
+  require 'nokogiri'
+  WWMD::HDOC = Nokogiri::HTML
+  require 'wwmd/nokogiri_html2text'
+else
+  require 'hpricot'
+  WWMD::HDOC = Hpricot
+  require 'wwmd/hpricot_html2text'
+end
+
+# EOF
