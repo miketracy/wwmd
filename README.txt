@@ -1,10 +1,6 @@
 
 	<;'"}()[]>{  XSSFish says, "Swim wif me"
 
-wwmd
-    by FIXME (your name)
-    FIXME (url)
-
 == DESCRIPTION:
 
 WWMD was originally intended to provide a console helper tool for 
@@ -41,7 +37,7 @@ check the wiki regularly.
 
 (The MIT License)
 
-Copyright (c) 2008 FIXME (different license?)
+Copyright (c) 2008
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
