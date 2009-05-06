@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby
 =begin rdoc
-:include:../sig.do
 =end
 module WWMD
   # == original author of hpricot_form

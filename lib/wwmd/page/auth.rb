@@ -1,11 +1,10 @@
-#!/usr/bin/env ruby
-#:include:sig.do
-#
-# This is where we do all the undocumented auth stuff.  NTLM is here and hooked in.
-#
-# WWMDNTLM is an incredibly naive NTLM implementation (used to get 
-# around NTLM for one project ahwile back
+=begin rdoc
+This is where we do all the undocumented auth stuff.  NTLM is here and 
+hooked in.
 
+WWMDNTLM is an incredibly naive NTLM implementation (used to get 
+around NTLM for one project ahwile back
+=end
 
 module WWMD
   class Page

@@ -1,7 +1,4 @@
-#!/usr/bin/env ruby
 =begin rdoc
-:include:../sig.do
-
 mixins all around
 =end
 

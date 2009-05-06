@@ -1,7 +1,4 @@
-#!/usr/bin/env ruby
 =begin rdoc
-:include:../sig.do
-
 html2text that works with Nokogiri
 =end
 module WWMD

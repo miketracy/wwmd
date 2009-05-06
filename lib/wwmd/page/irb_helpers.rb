@@ -1,9 +1,6 @@
-#!/usr/bin/env ruby
-#:include: sig.do
-
-# this file contains methods to help operations in irb (display methods etc.).
-
-#
+=begin rdoc
+this file contains methods to help operations in irb (display methods etc.).
+=end
 module WWMD
   class Page
 

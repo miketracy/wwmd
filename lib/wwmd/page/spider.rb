@@ -1,6 +1,3 @@
-#!/usr/bin/env ruby
-#:include:sig.do
-
 module WWMD
   # when a WWMD::Page object is created, it created its own WWMD::Spider object
   # which can be accessed using <tt>page.spider.method</tt>.  The <tt>page.set_data</tt>

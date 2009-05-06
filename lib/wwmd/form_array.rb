@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby
 =begin rdoc
-:include: ../sig.do
 This is a weird kind of data structure for no other reason than
 I wanted to keep the form inputs in order when they come in.
 

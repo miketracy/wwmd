@@ -1,7 +1,4 @@
-#!/usr/bin/env ruby
 =begin rdoc
-:include:../sig.do
-
 Place methods to character encodings here
 =end
 

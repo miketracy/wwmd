@@ -1,6 +1,3 @@
-#!/usr/bin/env ruby
-#:include:sig.do
-
 module WWMD
   attr_accessor :curl_object
   attr_accessor :body_data

@@ -1,6 +1,3 @@
-#!/usr/bin/env ruby
-#:include:sig.do
-
 module WWMD
   LINKS_REGEXP = [
     /window\.open\s*\(([^\)]+)/i,

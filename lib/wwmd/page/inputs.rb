@@ -1,8 +1,3 @@
-#!/usr/bin/env ruby
-=begin rdoc
-:include: sig.do
-=end
-
 module WWMD
   class Inputs
     attr_accessor :elems
