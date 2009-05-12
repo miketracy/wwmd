@@ -10,7 +10,7 @@ module WWMD
     :max_redirects => 20,
     :use_proxy => false,
     :debug => false,
-    :scrape_warn => false,
+    :scrape_warn => true,
     :parse => true,
     :timeout => 20,
   }

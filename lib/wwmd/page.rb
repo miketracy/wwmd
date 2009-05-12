@@ -29,7 +29,7 @@ module WWMD
       @spider = Spider.new(opts)
       @scrape = Scrape.new
       @base_url ||= opts[:base_url]
-      @scrape.warn = opts[:scrape_warn] if opts[:scrape_warn]
+      @scrape.warn = opts[:scrape_warn] if !opts[:scrape_warn].nil?
       if opts.empty?
         putw "Page initialized without opts"
         @scrape.warn = false
