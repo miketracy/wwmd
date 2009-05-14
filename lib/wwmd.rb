@@ -14,7 +14,7 @@ require 'nkf'
 module WWMD
 
   # :stopdoc:
-  VERSION = "0.2.9"
+  VERSION = "0.2.10"
   PARSER = :nokogiri  # :nokogiri || :hpricot
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
