@@ -10,6 +10,7 @@ require 'digest'
 require 'uri'
 require 'htmlentities'
 require 'nkf'
+require 'rexml/document'
 
 module WWMD
 

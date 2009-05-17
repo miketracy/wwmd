@@ -213,6 +213,7 @@ module WWMD
       self.insert(0,[ "__VIEWSTATE","" ])
       self.insert(0,[ "__EVENTARGUMENT","" ])
       self.insert(0,[ "__EVENTTARGET","" ])
+      self.insert(0,[ "__EVENTVALIDATION","" ])
       return nil
     end
 

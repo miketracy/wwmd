@@ -100,12 +100,12 @@ class String
 
   # base 64 decode
   def b64d
-    Base64.decode64(self)
+    self.unpack("m").first
   end
 
   # base 64 encode
   def b64e
-    Base64.encode64(self).split("\n").join
+    [self].pack("m")
   end
 
   # URI.escape using defaults or passed regexp
@@ -275,6 +275,13 @@ class String
     Digest::SHA512.digest(self).hexify
   end
 
+  def to_qp
+    [self].pack("M")
+  end
+
+  def from_qp
+    self.unpack("M").first
+  end
 end
 
 class Array
