@@ -21,7 +21,8 @@ describe URLParse do
     @up.proto.should == "https"
     @up.location.should == "www.location.com"
     @up.path.should == "/path/path/path/script"
-    @up.script.should == nil
+#    @up.script.should == nil
+    @up.script.should == ""
   end
 
   it "should parse when complete urls are passed" do
@@ -74,5 +75,15 @@ describe URLParse do
   it "should remove get params when posting to a form action with get params" do
     @up.parse("https://www.location.com/mail/h/1nyas6k8hplt9/?s=t","?s=t&at=xn3j38mvpzxqd138zgwsooxvojvbvd").to_s.should \
       == "https://www.location.com/mail/h/1nyas6k8hplt9/?s=t&at=xn3j38mvpzxqd138zgwsooxvojvbvd"
+  end
+
+  it "should not remove directory traversal params" do
+    @up.parse("http://www.example.com/?file=../../../../../../etc/passwd&param1=foobar.log&param2=false").to_s.should \
+      == "http://www.example.com/?file=../../../../../../etc/passwd&param1=foobar.log&param2=false"
+  end
+
+  it "should not remove directory traversal params 2" do
+    @up.parse("http://www.example.com:8888/foobar/barBaz.do?logFile=../../../../../../../../../../../../etc/passwd&foo=foobar.log&bazeep=false").to_s.should \
+      == "http://www.example.com:8888/foobar/barBaz.do?logFile=../../../../../../../../../../../../etc/passwd&foo=foobar.log&bazeep=false"
   end
 end
