@@ -190,8 +190,19 @@ module WWMD
     # path, we'll guess and prepend opts[:base_url]
     #
     # returns: <tt>array [ code, body_data.size ]</tt>
-    def get(url=nil)
-      self.url = @urlparse.parse(self.opts[:base_url],url).to_s if url
+    def get(url=nil,parse=true)
+      if url && parse
+        self.url = @urlparse.parse(self.opts[:base_url],url).to_s if url
+=begin
+        base = url.clip
+        args = url.clop
+        base = @urlparse.parse(self.opts[:base_url],base).to_s
+        self.url = base
+        self.url += ("?" + args) if args
+=end
+      elsif url
+        self.url = url
+      end
       self.perform
       if self.ntlm?
         putw "WARN: this page requires NTLM Authentication"
@@ -199,6 +210,18 @@ module WWMD
       end
       self.set_data
       return [self.code, self.body_data.size]
+    end
+
+    # GET with params and POST it as a form
+    def post(url=nil)
+      ep = url.clip
+      self.url = @urlparse.parse(self.opts[:base_url],ep).to_s if ep
+      form = url.clop.to_form
+      self.submit(form)
+    end
+
+    def furl(url)
+      self.url = @urlparse.parse(self.opts[:base_url],url).to_s
     end
 
 #:section: Reporting helper methods
