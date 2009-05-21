@@ -105,7 +105,7 @@ class String
 
   # base 64 encode
   def b64e
-    [self].pack("m")
+    [self].pack("m").chomp
   end
 
   # URI.escape using defaults or passed regexp
@@ -312,7 +312,7 @@ class File
   # write string to file
   def self.write(filename,contents)
     fout = File.open(filename,"w")
-    fout.puts contents
+    fout.print contents
     fout.close
   end
 end
