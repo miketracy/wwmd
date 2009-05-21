@@ -5,7 +5,7 @@ require 'zlib'
 require 'open3'
 require 'sha1'
 
-HEXCHARS = [("0".."9").to_a, ("a".."f").to_a].flatten
+HEXCHARS = [("0".."9").to_a, ("a".."f").to_a].flatten unless defined?(HEXCHARS)
 
 #-----------------------------------------------------------------------------
 # Mixins and class-specific items
@@ -77,6 +77,7 @@ class String
     end
     out.string
   end
+  alias_method :dehexify, :unhexify
 
   # ==========================================================================
   # Extends String class to return a hexdump in the style of 'hexdump -C'
