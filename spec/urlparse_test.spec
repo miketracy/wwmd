@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'wwmd'
+require 'wwmd/urlparse'
 include WWMD
 require 'spec'
 
@@ -32,6 +32,11 @@ describe URLParse do
     @up.location.should == "www.location.com"
     @up.path.should == "/hithere/dirname/"
     @up.script.should == "test.php"
+  end
+
+  it "should parse GET params correctly" do
+    @up.parse(@base,"http://www.location.com/test.php?foo=bar&baz=eep").to_s.should \
+      == "http://www.location.com/test.php?foo=bar&baz=eep"
   end
 
   it "should return the path if the path is fully qualified" do
@@ -86,4 +91,11 @@ describe URLParse do
     @up.parse("http://www.example.com:8888/foobar/barBaz.do?logFile=../../../../../../../../../../../../etc/passwd&foo=foobar.log&bazeep=false").to_s.should \
       == "http://www.example.com:8888/foobar/barBaz.do?logFile=../../../../../../../../../../../../etc/passwd&foo=foobar.log&bazeep=false"
   end
+
+  it "should not remove directory traversal params 2" do
+    @up.parse("http://www.example.com:8888", "/foobar/barBaz.do?logFile=../../../../../../../../../../../../etc/passwd&foo=foobar.log&bazeep=false").to_s.should \
+      == "http://www.example.com:8888/foobar/barBaz.do?logFile=../../../../../../../../../../../../etc/passwd&foo=foobar.log&bazeep=false"
+  end
+
 end
+
