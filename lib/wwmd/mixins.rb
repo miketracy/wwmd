@@ -2,6 +2,8 @@
 mixins all around
 =end
 
+require 'uri'
+
 alias putd puts#:nodoc:
 alias putx puts#:nodoc:
 alias putw puts#:nodoc:
@@ -109,14 +111,15 @@ class String
   end
 
   # URI.escape using defaults or passed regexp
-  def escape(reg=WWMD::ESCAPE[:default],unicodify=false)
-    if reg == WWMD::ESCAPE[:none]
-      return self
-    elsif reg == WWMD::ESCAPE[:default]
+  def escape(reg=nil,unicodify=false)
+    if reg.nil?
       ret = URI.escape(self)
     elsif reg.kind_of?(Symbol)
-      ret = URI.escape(self,WWMD::ESCAPE[reg])
-      reg = WWMD::ESCAPE[reg]
+      case reg
+        when :none; return self
+        when :default; ret =  URI.escape(self)
+        else; ret =  URI.escape(self,WWMD::ESCAPE[reg])
+      end
     else
       ret = URI.escape(self,reg)
     end
