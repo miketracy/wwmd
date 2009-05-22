@@ -17,8 +17,10 @@ module WWMD
       xml = super
       # emit quoted-printable if we need to
       if self.value =~ /[^\x20-\x7e]/
-        xml.add_attribute("encoding","quoted-printable")
-        xml.add_text(self.value.to_qp)
+#        xml.add_attribute("encoding","quoted-printable")
+#        xml.add_text(self.value.to_qp)
+        xml.add_attribute("encoding","urlencoded")
+        xml.add_text(self.value.escape(/[^\x20-\x7e]/))
       else
         xml.add_text(self.value)
       end

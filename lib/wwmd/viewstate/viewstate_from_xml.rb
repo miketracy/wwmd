@@ -31,6 +31,8 @@ module WWMD
 
     def decode_text(node)
       case node['encoding']
+        when "urlencoded"
+          node.inner_text.unescape
         when "quoted-printable"
           node.inner_text.from_qp
         when "base64"
