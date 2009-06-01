@@ -1,8 +1,8 @@
 require 'htmlentities'
 require 'wwmd/mixins'
 require 'wwmd/mixins_extends'
-require 'pp'
 module WWMD
+
   # yay for experiments in re-inventing the wheel
   class URLParse
     HANDLERS = [:https,:http,:ftp,:file]
@@ -30,7 +30,6 @@ module WWMD
 # does this work for http://location/?  probably not
       @base += "/" if (!@base.has_ext? || @base.split("/").size == 3)
       @rpath = make_me_path.join("/")
-      pp [:rpath,@rpath]
       @rpath += "?#{@params}" if @params
       @path = "/" + @rpath
       if @rpath.has_ext?
@@ -48,7 +47,6 @@ module WWMD
       tpath ||= ""
       @params = tpath.clop
       tpath = tpath.clip
-      pp [:tpath,@tpath]
       if @actual.empty?
         a_path = tpath.split("/").reject { |x| x.empty? }
       else
@@ -59,7 +57,6 @@ module WWMD
         @params = @actual.clop
         @actual = @actual.clip
       end
-      pp [:actual,@actual]
       a_path = [] if (@actual =~ (/^\//))
       b_path = @actual.split("/").reject { |x| x.empty? }
       a_path.pop if (a_path[-1] =~ /^\?/).kind_of?(Fixnum) && !b_path.empty?

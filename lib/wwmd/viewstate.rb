@@ -5,8 +5,8 @@ module WWMD
 end
 require 'rubygems'
 require 'nokogiri'
-require 'htmlentities'
 require 'rexml/document'
+require 'htmlentities'
 require 'wwmd/mixins'
 require 'wwmd/mixins_extends'
 require 'wwmd/mixins_external'

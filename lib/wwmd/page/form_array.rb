@@ -234,12 +234,12 @@ module WWMD
     alias_method :squeeze_keys!, :remove_null_keys!
 
     # dump a web page containing a csrf example of the current FormArray
-    def to_csrf(action)
+    def to_csrf(action,unescval=false)
       ret = ""
       ret << "<html><body>\n"
       ret << "<form method='post' id='wwmdtest' name='wwmdtest' action='#{action}'>\n"
       self.each do |key,val|
-        val = val.unescape.gsub(/'/) { %q[\'] }
+        val = val.unescape.gsub(/'/) { %q[\'] } if unescval
             ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val}' />\n"
 #            ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val.to_s.unescape.gsub(/'/,"\\'")}' />\n"
       end

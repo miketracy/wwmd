@@ -1,3 +1,5 @@
+require 'htmlentities'
+
 =begin rdoc
 mixins all around
 =end
@@ -49,6 +51,10 @@ end
 class String
 
   @@he = HTMLEntities.new
+
+  def strip_up
+    self.gsub(/[^\x20-\x7e,\n]/,"").gsub(/^\n/,"")
+  end
 
   # ip address to int
   def ip_to_int

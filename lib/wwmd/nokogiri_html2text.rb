@@ -36,6 +36,7 @@ module WWMD
         ret += s
       end
       ret.gsub(/\n+/) { "\n" }
+      ret.gsub(/[^\x20-\x7e,\n]/,"").gsub(/^\n/,"")
     end
   end
 end

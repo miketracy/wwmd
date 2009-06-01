@@ -122,7 +122,7 @@ module WWMD
       rescue => e
         @last_error = e
         putw "WARN: #{e.class}" if e.class =~ /Curl::Err/
-        self.logged_in = false
+#        self.logged_in = false
       end
       self.set_data
       return [self.code,self.page_status,self.body_data.size]
@@ -139,9 +139,7 @@ module WWMD
     #
     # returns: <tt>array [ code, body_data.size ]</tt>
     def submit(iform=nil,reg=WWMD::ESCAPE[:default])
-=begin
-  this is just getting worse and worse
-=end
+##### this is just getting worse and worse
       if iform.class == "Symbol"
         reg = iform
         iform = nil
@@ -191,15 +189,8 @@ module WWMD
     #
     # returns: <tt>array [ code, body_data.size ]</tt>
     def get(url=nil,parse=true)
-      if url && parse
+      if !(url =~ /[a-z]+:\/\//) && parse
         self.url = @urlparse.parse(self.opts[:base_url],url).to_s if url
-=begin
-        base = url.clip
-        args = url.clop
-        base = @urlparse.parse(self.opts[:base_url],base).to_s
-        self.url = base
-        self.url += ("?" + args) if args
-=end
       elsif url
         self.url = url
       end
@@ -220,174 +211,14 @@ module WWMD
       self.submit(form)
     end
 
-    def furl(url)
-      self.url = @urlparse.parse(self.opts[:base_url],url).to_s
-    end
-
-#:section: Reporting helper methods
-# These are methods that generate data for a parsed page
-
-    # return text representation of page code
-    #
-    # override with specific statuses in helper depending on page text
-    # etc to include statuses outside 200 = OK and other = ERR
-    def page_status
-      return "ERR" if self.response_code != 200
-      return "OK"
-    end
-
-    alias_method :status, :page_status#:nodoc:
-
-    # return value of @logged_in
-    def logged_in?
-      return @logged_in
-    end
-
-    # return a string of flags:
-    # Ll links
-    # Jj javascript includes
-    # Ff forms
-    # Cc comments
-    def report_flags
-      self.has_links?      ? ret  = "L" : ret  = "l"
-      self.has_jlinks?     ? ret += "J" : ret += "j"
-      self.has_form?       ? ret += "F" : ret += "f"
-      self.has_comments?   ? ret += "C" : ret += "c"
-      return ret
-    end
-
-    def has_links?;    return !@links.empty?;     end
-    def has_jlinks?;   return !@jlinks.empty?;    end
-    def has_form?;     return !(@forms.size < 1); end
-    def has_comments?; return !@comments.empty?;  end
-
-    # return page size in bytes
-    def size
-      return self.body_data.size
-    end
-
-#:section: Other methods
-
-    def all_tags#:nodoc:
-      return self.search("*").map { |x| x.name }
-    end
-
-    # return MD5 for DOM fingerprint
-    # take all tag names in page.to_s.md5
-    def fingerprint
-      self.all_tags.to_s.md5
-    end
-    alias_method :fp, :fingerprint #:nodoc:
-
-    # set link using an integer link from self.report
-    #--
-    # NOTE: I always use page.get(page.l(1)) anyway.
-    #++
-    def set_link(index)
-      self.url = @links[index]
-    end
-
-    # return link at index from @links array
-    def get_link(index)
-      @links[index]
-    end
-
-    alias_method :link, :get_link #:nodoc:
-    alias_method :l, :get_link #:nodoc:
-
-    # alias_method for body_data
-    def raw
-      self.body_data
-    end
-
-    # alias_method for last_effective_url
-    def current_url
-      self.last_effective_url
-    end
-
-    alias_method :current, :current_url
-    alias_method :cur, :current_url
-
-    # the last http response code
-    def code
-      self.response_code # .to_s
-    end
-
-#:section: Parsing convenience methods
-# methods that help parse and find information on a page including
-# access to forms etc.
-
-    # grep for regexp and remove leading whitespace
-    def grep(reg)
-      self.body_data.grep(reg).map { |i| i.gsub(/^\s+/, "") }
-    end
-
-    # return this page's form (at index id) as a FormArray
-    def get_form(id=nil)
-      id = 0 if not id
-      return nil if forms.empty?
-      @forms[id].to_form_array
-    end
-
-    # return the complete url to the form action on this page
-    def action(id=nil)
-      id = 0 if not id
-      act = self.forms[id].action
-      return self.last_effective_url if (act.nil? || act.empty?)
-      return @urlparse.parse(self.last_effective_url,act).to_s
-    end
-
-    # return an array of Element objects for an xpath search
-    def search(xpath)
-      self.scrape.hdoc.search(xpath)
-    end
-
-    # return an array of inner_html for each <script> tag encountered
-    def dump_scripts
-      self.get_tags("//script").map { |s| s.inner_html if s.inner_html.strip != '' }
-    end
-
-    alias_method :scripts, :dump_scripts
-
-#:section: Input and Output Helpers
-
-    # set self.opts[:base_url]
-    def setbase(url=nil)
-      return nil if not url
-      self.opts[:base_url] = url
-      self.base_url = url
-    end
-
-    # return md5sum for self.body_data
-    def md5
-      return self.body_data.md5
-    end
-
-    # write self.body_data to file
-    def write(filename)
-      File.write(filename,self.body_data)
-      return "wrote to " + filename
-    end
-
-    # read self.body_data from file
-    def read(filename)
-      self.body_data = File.read(filename)
+    # send arbitrary verb (only works with patch to taf2-curb
+    def verb(verb)
+      return false if !@curl_object.respond_to?(:http_verb)
+      self.clear_data
+      self.headers["Referer"] = self.cur if self.use_referer
+      self.http_verb(verb)
       self.set_data
-    end
-
-    # does this response have SET-COOKIE headers?
-    def set_cookies?
-      ret = []
-      self.header_data.each do |x|
-        if x[0].upcase == "SET-COOKIE"
-          ret << x[1]
-        end
-      end
-      return ret
-    end
-
-    def time
-      self.total_time
+      return [self.code, self.body_data.size]
     end
 
 #:section: Data callbacks and method_missing
