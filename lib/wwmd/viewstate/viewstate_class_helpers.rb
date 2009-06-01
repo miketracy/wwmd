@@ -1,5 +1,6 @@
 module WWMD
   class VSClassHelpers < ViewStateUtils
+
     def to_sym
       self.class.to_s.split(":").last.gsub(/[A-Z]+/,'\1_\0').downcase[1..-1].gsub(/\Avs/,"").to_sym
     end

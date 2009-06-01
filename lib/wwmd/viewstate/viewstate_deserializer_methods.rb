@@ -13,21 +13,21 @@ module WWMD
 
     def type(t=nil)
       typeref,typeval = self.deserialize_type
-      dlog(t,"typeref = #{typeref} typeval = #{typeval}")
+      dlog(t,"typeref = 0x#{typeref.to_s(16)} typeval = #{typeval}")
       VSType.new(typeref,typeval)
     end
 
     def string_formatted(t=nil)
       typeref,typeval = self.deserialize_type
       str = self.read_string
-      dlog(t,"typeref = #{typeref} typeval = #{typeval} string = #{str}")
+      dlog(t,"typeref = 0x#{typeref.to_s(16)} typeval = #{typeval} string = #{str}")
       VSStringFormatted.new(typeref,typeval,str)
     end
 
     def int_enum(t=nil)
       typeref,typeval = self.deserialize_type
       index = self.read_7bit_encoded_int
-      dlog(t,"typeref = #{typeref} typeval = #{typeval} index = #{index}")
+      dlog(t,"typeref = 0x#{typeref.to_s(16)} typeval = #{typeval} index = #{index}")
       VSIntEnum.new(typeref,typeval,index)
     end
 
@@ -44,7 +44,7 @@ module WWMD
       typeref,typeval = self.deserialize_type
       size  = read_7bit_encoded_int
       elems = read_7bit_encoded_int
-      dlog(t,"typeref = #{typeref} typeval = #{typeval} size = #{size} elems = #{elems}")
+      dlog(t,"typeref = 0x#{typeref.to_s(16)} typeval = #{typeval} size = #{size} elems = #{elems}")
       me = VSSparseArray.new(typeref,typeval,size,elems)
       if elems > size
         raise "Invalid sparse_array"
@@ -79,7 +79,7 @@ module WWMD
     def array(t=nil)
       typeref,typeval = self.deserialize_type
       len = read_7bit_encoded_int
-      dlog(t,"typeref = #{typeref} typeval = #{typeval} len = #{len}")
+      dlog(t,"typeref = 0x#{typeref.to_s(16)} typeval = #{typeval} len = #{len}")
       me = VSArray.new(typeref,typeval)
       (1..len).each do |i|
         me.add(self.deserialize_value)
@@ -203,7 +203,11 @@ module WWMD
     def deserialize_value
       @last_offset = self.offset
       token = self.read_byte # self.read_raw_byte
-      raise "Invalid Type #{token.hexify} at #{last_offset}" if not (tsym = VIEWSTATE_TYPES[token])
+      if not (tsym = VIEWSTATE_TYPES[token])
+        puts "TOKEN: [0x#{token.to_s(16)}] at #{last_offset}"
+        puts @bufarr.slice(0..31).join("").hexdump
+        raise "Invalid Type [0x#{token.to_s(16)}] at #{last_offset}" if not (tsym = VIEWSTATE_TYPES[token])
+      end
       nobj = self.send(tsym,token)
       raise "Invalid Class Returned #{nobj.class}" if not VIEWSTATE_TYPES.include?(nobj.opcode)
       return nobj

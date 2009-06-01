@@ -49,3 +49,7 @@ module WWMD
   } unless defined?(VIEWSTATE_TYPES)
 
 end
+
+if __FILE__ == $0
+  puts "size: #{WWMD::VIEWSTATE_TYPES.size}"
+end
