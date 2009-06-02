@@ -59,6 +59,7 @@ module WWMD
       @indexed_strings = []
       @mac = nil
       @debug = false
+      self.deserialize if b64
     end
 
     # mac_enabled?
