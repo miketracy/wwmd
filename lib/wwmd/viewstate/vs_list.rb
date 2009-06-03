@@ -1,6 +1,7 @@
 module WWMD
 
   class VSList < VSClassHelpers
+    attr_accessor :value
 
     def initialize()
       @value = []

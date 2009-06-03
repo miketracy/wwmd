@@ -1,7 +1,8 @@
 module WWMD
-  attr_accessor :value
 
   class VSString < VSClassHelpers
+    attr_accessor :value
+
     def initialize(val)
       @value = val
     end
