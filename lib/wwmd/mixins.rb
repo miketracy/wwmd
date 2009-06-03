@@ -293,7 +293,7 @@ class String
   end
 
   def pbcopy
-    IO.popen('pbcopy', 'r+') { |c| c.puts self }
+    IO.popen('pbcopy', 'r+') { |c| c.print self }
   end
 end
 
