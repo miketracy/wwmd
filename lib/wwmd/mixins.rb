@@ -291,6 +291,10 @@ class String
   def from_qp
     self.unpack("M").first
   end
+
+  def pbcopy
+    IO.popen('pbcopy', 'r+') { |c| c.puts self }
+  end
 end
 
 class Array
