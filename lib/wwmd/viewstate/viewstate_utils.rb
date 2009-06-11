@@ -1,5 +1,5 @@
 module WWMD
-  class ViewStateUtils
+  module ViewStateUtils
 
     def putd(msg)
       puts(msg) if self.debug
