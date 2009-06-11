@@ -1,39 +1,20 @@
 require 'wwmd/viewstate/viewstate_utils'
 module WWMD
-  class ViewState < ViewStateUtils
+  class ViewState
+    include ViewStateUtils
   end
 end
 require 'rubygems'
 require 'nokogiri'
 require 'rexml/document'
 require 'htmlentities'
-require 'wwmd/mixins'
-require 'wwmd/mixins_extends'
-require 'wwmd/mixins_external'
+Dir.glob(::File.join(::File.dirname(__FILE__),"mixins*.rb")).each { |rb| require rb }
 require 'wwmd/viewstate/viewstate_types'
-require 'wwmd/viewstate/viewstate_class_helpers'
 require 'wwmd/viewstate/viewstate_yaml'
 require 'wwmd/viewstate/viewstate_deserializer_methods'
 require 'wwmd/viewstate/viewstate_from_xml'
-require 'wwmd/viewstate/vs_read_value'
-require 'wwmd/viewstate/vs_read_types'
-require 'wwmd/viewstate/vs_value'
-require 'wwmd/viewstate/vs_array'
-require 'wwmd/viewstate/vs_binary_serialized'
-require 'wwmd/viewstate/vs_int_enum'
-require 'wwmd/viewstate/vs_hashtable'
-require 'wwmd/viewstate/vs_hybrid_dict'
-require 'wwmd/viewstate/vs_list'
-require 'wwmd/viewstate/vs_pair'
-require 'wwmd/viewstate/vs_sparse_array'
-require 'wwmd/viewstate/vs_string'
-require 'wwmd/viewstate/vs_string_array'
-require 'wwmd/viewstate/vs_string_formatted'
-require 'wwmd/viewstate/vs_triplet'
-require 'wwmd/viewstate/vs_type'
-require 'wwmd/viewstate/vs_unit'
-require 'wwmd/viewstate/vs_indexed_string'
-require 'wwmd/viewstate/vs_indexed_string_ref'
+require 'wwmd/viewstate/vs_stubs'
+
 module WWMD
   class ViewState
     attr_accessor :b64
