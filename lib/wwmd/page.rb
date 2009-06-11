@@ -212,8 +212,9 @@ module WWMD
     end
 
     # send arbitrary verb (only works with patch to taf2-curb
-    def verb(verb)
+    def verb(verb,url=nil)
       return false if !@curl_object.respond_to?(:http_verb)
+      self.url = url if url
       self.clear_data
       self.headers["Referer"] = self.cur if self.use_referer
       self.http_verb(verb)

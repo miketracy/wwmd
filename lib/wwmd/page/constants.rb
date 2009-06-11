@@ -18,10 +18,11 @@ module WWMD
   ESCAPE = {
     :url     => /[^a-zA-Z0-9\-_%]/,
     :nalnum  => /[^a-zA-Z0-9]/,
-    :xss     => /[^a-zA-Z0-9=?&()']/,
+    :xss     => /[^a-zA-Z0-9=?()']/,
     :ltgt    => /[<>]/,
     :all     => /.*/,
-    :b64     => /[=+\/]/,
+#    :b64     => /[=+\/]/,
+    :b64     => /[^a-zA-Z0-9]/,
     :none    => :none,
     :default => :default,
   }
@@ -33,11 +34,13 @@ module WWMD
     :ie7 => "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)",
     :ie8 => "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)",
     :opera => "Opera/9.20 (Windows NT 6.0; U; en)",
-    :safari => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_4_11; en) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.22"
+    :safari => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_4_11; en) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.22",
+    :safari4 => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_7; en-us) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Safari/530.17",
+    :wwmd => "Mozilla/5.0 (compatible; WWMD #{WWMD::VERSION}; o_hai)"
   }
 
   DEFAULT_HEADERS = {
-    "User-Agent" => UA[:moz3],
+    "User-Agent" => UA[:wwmd],
     "Accept" => "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language" => "en-US,en;q=0.8,en-au;q=0.6,en-us;q=0.4,en;q=0.2",
     "Accept-Encoding" => "gzip,deflate",
