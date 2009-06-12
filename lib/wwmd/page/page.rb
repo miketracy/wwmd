@@ -23,7 +23,7 @@ module WWMD
   # enhance and ease the performance of web application penetration testing.
   class Page
 
-    include ::WWMDUtils
+    include WWMDUtils
 
     def initialize(opts={})
       @opts = opts.clone

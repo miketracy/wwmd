@@ -240,8 +240,9 @@ module WWMD
       ret << "<form method='post' id='wwmdtest' name='wwmdtest' action='#{action}'>\n"
       self.each do |key,val|
         val = val.unescape.gsub(/'/) { %q[\'] } if unescval
-            ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val}' />\n"
-#            ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val.to_s.unescape.gsub(/'/,"\\'")}' />\n"
+#            ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val}' />\n"
+#            ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val.to_s.unescape.gsub(/'/,%{\\\\'})}' />\n"
+            ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val.to_s.unescape}' />\n"
       end
       ret << "</form>\n"
       ret << "<script>document.wwmdtest.submit()</script>\n"
