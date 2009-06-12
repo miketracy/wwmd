@@ -1,3 +1,4 @@
+require 'wwmd_utils'
 module WWMD
   attr_accessor :curl_object
   attr_accessor :body_data
@@ -22,6 +23,8 @@ module WWMD
   # WWMD::Page is an extension of a Curl::Easy object which provides methods to
   # enhance and ease the performance of web application penetration testing.
   class Page
+
+    include ::WWMDUtils
 
     def initialize(opts={})
       @opts = opts.clone
