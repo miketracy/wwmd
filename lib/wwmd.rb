@@ -68,11 +68,11 @@ WWMD.require_all_libs_relative_to(__FILE__)
 if WWMD::PARSER == :nokogiri
   require 'nokogiri'
   WWMD::HDOC = Nokogiri::HTML
-  require 'wwmd/html2text_nokogiri'
+  require 'wwmd/page/html2text_nokogiri'
 else
   require 'hpricot'
   WWMD::HDOC = Hpricot
-  require 'wwmd/html2text_hpricot'
+  require 'wwmd/page/html2text_hpricot'
 end
 
 # EOF
