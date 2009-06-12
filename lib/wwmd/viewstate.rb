@@ -8,7 +8,7 @@ module WWMD
     include ViewStateUtils
   end
 end
-Dir.glob(::File.join(::File.dirname(__FILE__),"mixins*.rb")).each { |rb| require rb }
+require 'wwmd/class_extensions'
 require 'wwmd/viewstate/viewstate'
 require 'wwmd/viewstate/viewstate_types'
 require 'wwmd/viewstate/viewstate_yaml'

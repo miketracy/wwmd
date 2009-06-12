@@ -1,4 +1,6 @@
+require 'wwmd/class_extensions/mixins_string_encoding'
 class String
+  include WWMD::Encoding
 
   @@he = HTMLEntities.new
 
@@ -65,14 +67,4 @@ class String
     return @@he.decode(self)
   end
 
-  def edecode!
-    self.replace(@@he.decode(self))
-  end
-
-  # encode the string using Encoding.to_utf7(self,false)
-  # (encode non [:alnum:] characters).  Set <tt>all</tt> true
-  # to encode all characters in the string.
-  def to_utf7(all=false)
-    Encoding.to_utf7(self,all)
-  end
 end

@@ -1,6 +1,5 @@
 require 'htmlentities'
-require 'wwmd/mixins'
-require 'wwmd/mixins_extends'
+require 'wwmd/class_extensions'
 module WWMD
 
   # yay for experiments in re-inventing the wheel

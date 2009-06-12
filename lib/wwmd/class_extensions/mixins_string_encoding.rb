@@ -3,11 +3,11 @@ Place methods to character encodings here
 =end
 
 module WWMD
-  # This is where character encodings should go as singletons
+  # This is where character encodings should go as module methods
   # to be used as mixins for the String class
-  class Encoding
+  module Encoding
 
-    # Helper for String.to_utf7 mixin
+    # String.to_utf7 mixin
     # (complete hack but it works)
     #
     # if all=true, encode all characters.
@@ -17,7 +17,7 @@ module WWMD
     # used by:
     #  String.to_utf7
     #  String.to_utf7!
-    def self.to_utf7(str,all=nil)
+    def to_utf7(all=nil)
       if all.kind_of?(Regexp)
         reg = all
       elsif all.kind_of?(TrueClass)
@@ -27,7 +27,7 @@ module WWMD
       end
       puts reg.inspect
       ret = ''
-      str.each_byte do |b|
+      self.each_byte do |b|
         if b.chr.match(reg)
           ret += "+" + Base64.encode64(b.chr.toutf16)[0..2] + "-"
         else

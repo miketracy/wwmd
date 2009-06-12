@@ -54,7 +54,7 @@ module WWMD
         ::File.join(::File.dirname(fname), dir, '**', '*.rb'))
 
     Dir.glob(search_me).sort.each do |rb|
-      next if rb =~ /_html2text/
+      next if rb =~ /html2text_/
       require rb
     end
   end
@@ -68,11 +68,11 @@ WWMD.require_all_libs_relative_to(__FILE__)
 if WWMD::PARSER == :nokogiri
   require 'nokogiri'
   WWMD::HDOC = Nokogiri::HTML
-  require 'wwmd/nokogiri_html2text'
+  require 'wwmd/html2text_nokogiri'
 else
   require 'hpricot'
   WWMD::HDOC = Hpricot
-  require 'wwmd/hpricot_html2text'
+  require 'wwmd/html2text_hpricot'
 end
 
 # EOF

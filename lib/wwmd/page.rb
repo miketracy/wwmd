@@ -1,2 +1,2 @@
-require 'wwmd_utils'
-require 'page/page'
+require 'wwmd/wwmd_utils'
+require 'wwmd/page/page'
