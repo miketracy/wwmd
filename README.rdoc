@@ -2,8 +2,8 @@
 
 WWMD is currently in the throes of major cleanup and refactoring.
 
-Installing the and using any gem will work.  The viewstate tools can be had 
-by themselves by using:
+Installing and using any gem will work.  The viewstate tools can be had by 
+themselves by using:
 
   require 'wwmd/viewstate'
 
