@@ -1,5 +1,15 @@
+== PARDON OUR DUST
 
-	<;'"}()[]>{  XSSFish says, "Swim wif me"
+WWMD is currently in the throes of major cleanup and refactoring.
+
+Installing the and using any gem will work.  The viewstate tools can be had 
+by themselves by using:
+
+  require 'wwmd/viewstate'
+
+We appreciate your patience.
+
+  <;'"}()[]>{  XSSFish says, "Swim wif me"
 
 == DESCRIPTION:
 
@@ -32,6 +42,20 @@ check the wiki regularly.
 * nokogiri
 * hpricot (for the time being)
 * htmlentities
+
+== INSTALL
+
+==== gem installation
+
+WWMD is available as a gem from github:
+
+    gem sources -a http://gems.github.com #(you only have to do this once)
+    gem install mtracy-rbkb
+
+=== manual installation
+
+fetch the repository from github and add path/to/wwmd/lib to your RUBYLIB 
+environment variable
 
 == LICENSE:
 
