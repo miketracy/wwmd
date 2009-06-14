@@ -13,6 +13,7 @@ module WWMD
     attr_reader   :last_offset
     attr_reader   :xml
     attr_reader   :ndoc
+    attr_reader   :obj_counts
 
     def initialize(b64=nil)
       @b64 = b64
@@ -24,6 +25,7 @@ module WWMD
       @indexed_strings = []
       @mac = nil
       @debug = false
+      @obj_counts = {}
       self.deserialize if b64
     end
 
@@ -70,7 +72,7 @@ module WWMD
         header.add_element(max)
       end
       @xml.add_element(header)
-      @xpa = Nokogiri::XML.parse(@xml.to_s)
+      @ndoc = Nokogiri::XML.parse(@xml.to_s)
       self
     end
 

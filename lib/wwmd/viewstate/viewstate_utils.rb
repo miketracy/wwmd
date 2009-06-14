@@ -8,11 +8,16 @@ module WWMD
     def slog(obj,msg=nil)
       raise "No @value" if not obj.respond_to?(:value)
       raise "No @size"  if not obj.respond_to?(:size)
+      return nil if !self.debug
       putd "#{@stack.size.to_s(16).rjust(8,"0")} [0x#{obj.opcode.to_s(16)}] #{obj.class}: #{msg}"
     end
 
     def dlog(t,msg)
       raise "null token passed to dlog()" if t.nil?
+      o = WWMD::VIEWSTATE_TYPES[t]
+      @obj_counts[o] ||= 0
+      @obj_counts[o] += 1
+      return nil if !self.debug
       putd "#{self.last_offset} [0x#{t.to_s(16).rjust(2,"0")}] #{VIEWSTATE_TYPES[t]}: #{msg}"
     end
 
