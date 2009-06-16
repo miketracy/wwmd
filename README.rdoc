@@ -50,7 +50,7 @@ check the wiki regularly.
 WWMD is available as a gem from github:
 
     gem sources -a http://gems.github.com #(you only have to do this once)
-    gem install mtracy-rbkb
+    gem install mtracy-wwmd
 
 === manual installation
 
