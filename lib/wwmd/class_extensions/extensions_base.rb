@@ -1,7 +1,7 @@
 require 'htmlentities'
 
 =begin rdoc
-mixins all around
+let's re-open everything!
 =end
 
 require 'uri'
@@ -9,18 +9,6 @@ require 'uri'
 alias putd puts#:nodoc:
 alias putx puts#:nodoc:
 alias putw puts#:nodoc:
-
-# I really hate this
-class NilClass#:nodoc:
-  def empty?; return true; end
-  def size;   return 0;    end
-  def to_form; return FormArray.new([]); end
-  def clop; return nil; end
-  def inner_html; return nil; end
-  def get_attribute(*args); return nil; end
-  def grep(*args); return []; end
-  def escape(*args); return nil; end
-end
 
 class Numeric
   # return binary representation of <tt>length</tt> size padded with \x00
@@ -127,6 +115,19 @@ class String
     return fname
   end
 
+  # parse passed GET param string into a form and return the FormArray object
+  def to_form
+    if self.split("\n").size > 1
+      return self.to_form_from_show
+    end
+    ret = FormArray.new
+    self.split("&").each do |x|
+      y = x.split("=",2)
+      ret.extend!(y[0].to_s,y[1].to_s)
+    end
+    return ret
+  end
+
   def to_form_from_show
     self.split("\n").map { |a|
       key,val = a.split("=",2)
@@ -140,18 +141,11 @@ class String
     return self.gsub("\n","").to_form
   end
 
-  # parse passed GET param string into a form and return the FormArray object
-  def to_form
-    if self.split("\n").size > 1
-      return self.to_form_from_show
-    end
-    ret = FormArray.new
-    self.split("&").each do |x|
-      y = x.split("=",2)
-      ret.extend!(y[0].to_s,y[1].to_s)
-    end
-    return ret
+  def to_form_from_req
+#    self.split("\x0d\x0a\x0d\x0a")[1].to_form
+    self.split("\n\n")[1].to_form
   end
+  alias_method :to_ffr, :to_form_from_req
 
   # create filename from url changing "/" to "_"
   def to_fn(ext=nil)
@@ -206,14 +200,6 @@ class String
 
   def sha512
     Digest::SHA512.digest(self).hexify
-  end
-
-  def to_qp
-    [self].pack("M")
-  end
-
-  def from_qp
-    self.unpack("M").first
   end
 
   def pbcopy

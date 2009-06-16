@@ -11,7 +11,7 @@ class String
 
   # base 64 encode
   def b64e
-    [self].pack("m").chomp
+    [self].pack("m").gsub("\n","")
   end
 
   # URI.escape using defaults or passed regexp
@@ -65,6 +65,15 @@ class String
   # decode html entities in string
   def edecode
     return @@he.decode(self)
+  end
+
+  # quoted printable
+  def to_qp
+    [self].pack("M")
+  end
+
+  def from_qp
+    self.unpack("M").first
   end
 
 end
