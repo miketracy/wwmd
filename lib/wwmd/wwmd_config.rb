@@ -14,6 +14,8 @@ module WWMD
 
     def self.parse_opts(args)
       inopts = Hash.new
+      inopts[:max_redirects] = 10
+      inopts[:timeout] = 30
       opts = OptionParser.new do |opts|
         # set defaults
         opts.on("-p", "--password PASSWORD", "Password")     { |v| inopts[:password] = v }
