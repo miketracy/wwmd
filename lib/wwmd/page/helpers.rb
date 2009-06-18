@@ -2,6 +2,7 @@ module WWMD
   class Page
     # copy and paste from burp request windows
     def from_paste
+      self.enable_cookies = false
       req = %x[pbpaste]
       return nil if not req
       h,b = req.chomp.split("\x0d\x0a\x0d\x0a")
