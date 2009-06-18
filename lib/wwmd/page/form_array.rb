@@ -66,8 +66,12 @@ module WWMD
 
     def clear_viewstate
       self.each { |k,v|
-        self[k] = "" if k == "__VIEWSTATE"
+        self[k] = "" if k =~ /^__/
       }
+    end
+
+    def rm_viewstate
+      self.replace(self.map { |k,v| [k,v] if not k =~ /^__/ }.reject { |x| x.nil? })
     end
 
     alias_method :extend!, :add #:nodoc (this is here for backward compat)
