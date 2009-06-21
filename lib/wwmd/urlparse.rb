@@ -36,7 +36,20 @@ module WWMD
         @script = @rpath.basename.clip
       end
       @script = "" if @script.nil?
-      @base_url = @proto + "://" + @location
+      begin
+        @base_url = @proto + "://" + @location
+      rescue => e
+        dgb = WWMD.debug
+        WWMD.debug = true
+        putd "ERROR in urlparse TRACE:"
+        pp *args
+        putd @proto
+        putd @base
+        putd @actual
+        putd @location
+        WWMD.debug = dbg
+        raise e
+      end
       @fqpath = @path + @script
       self
     end
