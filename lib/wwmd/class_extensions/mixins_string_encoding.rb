@@ -25,7 +25,7 @@ module WWMD
       else
         reg = ESCAPE[:nalnum] || /[^a-zA-Z0-9]/
       end
-      puts reg.inspect
+      putd "DEBG:" + reg.inspect
       ret = ''
       self.each_byte do |b|
         if b.chr.match(reg)

@@ -6,10 +6,6 @@ let's re-open everything!
 
 require 'uri'
 
-alias putd puts#:nodoc:
-alias putx puts#:nodoc:
-alias putw puts#:nodoc:
-
 class Numeric
   # return binary representation of <tt>length</tt> size padded with \x00
   #  length:  length in bytes to return (padded with least signficant \x00
@@ -220,14 +216,6 @@ class Array
   # join the array with "\n" and write to a file
   def to_file(filename)
     File.write(filename,self.join("\n"))
-  end
-end
-
-class Hash#:nodoc:
-  # no idea what I was doing here
-  def to_f#:nodoc:
-    self.each_key { |l| puts "#{l} = " + self[l] }
-    return nil
   end
 end
 
