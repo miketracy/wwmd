@@ -40,21 +40,6 @@ module WWMD
       return self.get_attribute("action")
     end
 
-    def report
-      puts "action = #{self.action}"
-      self.fields.each { |field| puts field.to_text }
-      return nil
-    end
-
-    alias_method :show, :report
-
-    def to_form_array
-      FormArray.new(self.fields)
-    end
-
-    def to_array
-      self.to_form_array
-    end
   end
 
   class Field < Form

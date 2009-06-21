@@ -25,17 +25,13 @@ module WWMD
 
     include WWMDUtils
 
-    def initialize(opts={})
+    def initialize(opts={}, &block)
       @opts = opts.clone
       DEFAULTS.each { |k,v| @opts[k] = v if not opts[k] }
       @spider = Spider.new(opts)
       @scrape = Scrape.new
       @base_url ||= opts[:base_url]
       @scrape.warn = opts[:scrape_warn] if !opts[:scrape_warn].nil?
-      if opts.empty?
-        putw "Page initialized without opts"
-        @scrape.warn = false
-      end
       @urlparse = URLParse.new()
       @inputs = Inputs.new(self)
       @logged_in = false
@@ -61,6 +57,11 @@ module WWMD
 
       #proxy?
       @curl_object.proxy_url = @opts[:proxy_url] if @opts[:use_proxy]
+      instance_eval(&block) if block_given?
+      if opts.empty? && @scrape.warn
+        putw "Page initialized without opts"
+        @scrape.warn = false
+      end
     end
 
 #:section: Heavy Lifting
@@ -141,7 +142,7 @@ module WWMD
     #
     # returns: <tt>array [ code, body_data.size ]</tt>
     def submit(iform=nil,reg=WWMD::ESCAPE[:default])
-##### this is just getting worse and worse
+    ## this is just getting worse and worse
       if iform.class == "Symbol"
         reg = iform
         iform = nil
@@ -159,6 +160,7 @@ module WWMD
         sform = iform.clone             # clone the form so that we don't change the original
       end
       sform.escape_all!(reg)
+      self.url = sform.action if sform.action
       if sform.empty?
         self.http_post('')
       else
@@ -176,11 +178,8 @@ module WWMD
     def submit_string(post_string)
       self.clear_data
       self.http_post(post_string)
+      putw "WARN: authentication headers in response" if self.auth?
       self.set_data
-      if self.ntlm?
-        putw "WARN: this page requires NTLM Authentication"
-        putw "WARN: use ntlm_get instead of get"
-      end
       return [self.code, self.body_data.size]
     end
 
@@ -197,10 +196,7 @@ module WWMD
         self.url = url
       end
       self.perform
-      if self.ntlm?
-        putw "WARN: this page requires NTLM Authentication"
-        putw "use ntlm_get instead of get"
-      end
+      putw "WARN: authentication headers in response" if self.auth?
       self.set_data
       return [self.code, self.body_data.size]
     end
@@ -241,7 +237,11 @@ module WWMD
 
     # send methods not defined here to <tt>@curl_object</tt>
     def method_missing(methodname, *args)
-      @curl_object.send(methodname, *args)
+      if WWMD.respond_to?(methodname)
+        WWMD.send(methodname, *args)
+      else
+        @curl_object.send(methodname, *args)
+      end
     end
 
   end

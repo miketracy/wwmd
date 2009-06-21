@@ -87,4 +87,28 @@ module WWMD
       %x[open #{fn}]
     end
   end
+
+  class Form
+    def report
+      return nil if not WWMD::console
+      putx "action = #{self.action}"
+      self.fields.each { |field| putx field.to_text }
+      return nil
+    end
+    alias_method :show, :report
+  end
+
+  class FormArray
+    # IRB: puts the form in human readable format
+    # if you <tt>form.show(true)</tt> it will show unescaped values
+    def show(unescape=false)
+      if unescape
+        self.each_index { |i| puts i.to_s + " :: " + self[i][0].to_s + " = " + self[i][1].to_s.unescape }
+      else
+        self.each_index { |i| puts i.to_s + " :: " + self[i][0].to_s + " = " + self[i][1].to_s }
+      end
+      return nil
+    end
+
+  end
 end

@@ -13,7 +13,12 @@ module WWMD
     def get_form(id=nil)
       id = 0 if not id
       return nil if forms.empty?
-      @forms[id].to_form_array
+      f = @forms[id]
+      url_action = @urlparse.parse(self.cur,f.action).to_s
+      FormArray.new do |x|
+        x.set_fields(f.fields)
+        x.action = url_action
+      end
     end
 
     # return the complete url to the form action on this page
@@ -57,7 +62,7 @@ module WWMD
     end                                        
 
     def furl(url)
-      self.url = @urlparse.parse(self.opts[:base_url],url).to_s
+      self.url = @urlparse.parse(self.base_url,url).to_s
     end
 
     # set self.opts[:base_url]

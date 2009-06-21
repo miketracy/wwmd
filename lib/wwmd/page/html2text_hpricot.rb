@@ -45,7 +45,7 @@ module WWMD
           s += node_to_text(c)
         end
       rescue => e
-#        puts "WARNING: #{e.inspect}"
+        putw "WARN: #{e.inspect}"
       end
       return s
     end

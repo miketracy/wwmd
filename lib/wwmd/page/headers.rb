@@ -32,7 +32,7 @@ module WWMD
           WWMD::DEFAULT_HEADERS.each { |k,v| self.headers[k] = v }
           return "headers set from default"
         rescue => e
-          puts e
+          putw "WARN: " + e
           return "error setting headers"
         end
       elsif arg.class == Symbol

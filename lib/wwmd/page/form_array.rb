@@ -6,34 +6,43 @@ Accessing this either as a hash or an array (but => won't work)
 
 Some of the methods in here are kept for backward compat before the refactor
 and now everything in this array should be accessed with []= and []
+
+Set :action and take a block.  Page#submit_form should take this and do the
+right thing.
 =end
 
 module WWMD
+  attr_accessor :action
   class FormArray < Array
 
-    def initialize(fields=nil)
-      if not fields.nil?
-        # this first one is an array of field objects
-        if fields.class == Array
-          fields.each do |f|
-            name = f['name']
-            if self.name_exists(name)
-              if f['type'] == "hidden"
-                self.set name,f.get_value
-              elsif f['type'] == "checkbox" and f.to_html.grep(/checked/) != ''
-                self[name] = f.get_value
-              end
-            else
-              self << [ f['name'],f.get_value ]
+    def initialize(fields=nil,action=nil,&block)
+      set_fields(fields)
+      @action = action
+      instance_eval(&block) if block_given?
+    end
+
+    def set_fields(fields=nil)
+      return nil if fields.nil?
+      # this first one is an array of field objects
+      if fields.class == Array
+        fields.each do |f|
+          name = f['name']
+          if self.name_exists(name)
+            if f['type'] == "hidden"
+              self.set name,f.get_value
+            elsif f['type'] == "checkbox" and f.to_html.grep(/checked/) != ''
+              self[name] = f.get_value
             end
+          else
+            self << [ f['name'],f.get_value ]
           end
-        elsif fields.class == Hash
-          fields.each_pair { |k,v| self[k] = v }
-        elsif fields.class == String
-          fields.split("&").each do |f|
-            k,v = f.split("=",2)
-            self[k] = v
-          end
+        end
+      elsif fields.class == Hash
+        fields.each_pair { |k,v| self[k] = v }
+      elsif fields.class == String
+        fields.split("&").each do |f|
+          k,v = f.split("=",2)
+          self[k] = v
         end
       end
     end
@@ -43,6 +52,7 @@ module WWMD
     def clone
       ret = self.class.new
       self.each { |r| ret << r.clone }
+      ret.action = self.action
       return ret
     end
 
@@ -201,18 +211,7 @@ module WWMD
       return base.clip + "?" + ret.to_s
     end
 
-    # IRB: puts the form in human readable format
-    # if you <tt>form.show(true)</tt> it will show unescaped values
-    def show(unescape=false)
-      if unescape
-        self.each_index { |i| puts i.to_s + " :: " + self[i][0].to_s + " = " + self[i][1].to_s.unescape }
-      else
-        self.each_index { |i| puts i.to_s + " :: " + self[i][0].to_s + " = " + self[i][1].to_s }
-      end
-      return nil
-    end
-
-    # meh
+    # add viewstate stuff
     def add_viewstate#:nodoc:
       self.insert(0,[ "__VIEWSTATE","" ])
       self.insert(0,[ "__EVENTARGUMENT","" ])
@@ -220,8 +219,6 @@ module WWMD
       self.insert(0,[ "__EVENTVALIDATION","" ])
       return nil
     end
-
-#    alias_method, :add_state, :add_viewstate#:nodoc:
 
     # remove form elements with null values
     def remove_nulls!
@@ -244,8 +241,6 @@ module WWMD
       ret << "<form method='post' id='wwmdtest' name='wwmdtest' action='#{action}'>\n"
       self.each do |key,val|
         val = val.unescape.gsub(/'/) { %q[\'] } if unescval
-#            ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val}' />\n"
-#            ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val.to_s.unescape.gsub(/'/,%{\\\\'})}' />\n"
             ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val.to_s.unescape}' />\n"
       end
       ret << "</form>\n"

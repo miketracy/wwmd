@@ -10,7 +10,7 @@ module WWMD
     end
 
     def show
-      puts @elems
+      putx @elems
     end
 
     # call me from Page.set_data
