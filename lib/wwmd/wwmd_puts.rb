@@ -3,7 +3,7 @@ module WWMD
   attr_accessor :debug
   @console = false
   @debug = false
-  def self.putd(*args); puts *args if WWMD::debug; end
-  def self.putx(*args); puts *args if WWMD::console; end
-  def self.putw(*args); puts *args if WWMD::console; end
+  def putd(*args); puts *args if WWMD::debug; end
+  def putx(*args); puts *args if WWMD::console; end
+  def putw(*args); puts *args if WWMD::console; end
 end
