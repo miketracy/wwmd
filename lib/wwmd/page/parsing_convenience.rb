@@ -12,7 +12,7 @@ module WWMD
     # return this page's form (at index id) as a FormArray
     def get_form(id=nil)
       id = 0 if not id
-      return nil if forms.empty?
+      return nil if forms.empty? || !forms[id]
       f = @forms[id]
       url_action = @urlparse.parse(self.cur,f.action).to_s
       FormArray.new do |x|

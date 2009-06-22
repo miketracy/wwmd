@@ -204,8 +204,8 @@ module WWMD
       @last_offset = self.offset
       token = self.read_byte # self.read_raw_byte
       if not (tsym = VIEWSTATE_TYPES[token])
-        puts "TOKEN: [0x#{token.to_s(16)}] at #{last_offset}"
-        puts @bufarr.slice(0..31).join("").hexdump
+        STDERR.puts "TOKEN: [0x#{token.to_s(16)}] at #{last_offset}"
+        STDERR.puts @bufarr.slice(0..31).join("").hexdump
         raise "Invalid Type [0x#{token.to_s(16)}] at #{last_offset}" if not (tsym = VIEWSTATE_TYPES[token])
       end
       nobj = self.send(tsym,token)

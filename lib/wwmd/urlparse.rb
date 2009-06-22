@@ -83,6 +83,7 @@ module WWMD
     end
 
     def has_proto?
+      return false if @actual.empty?
       return true if HANDLERS.include?(@actual.split(":").first.downcase.to_sym)
       return false
     end

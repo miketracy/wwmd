@@ -16,14 +16,14 @@ module WWMD
 
     # IRB: text report what has been parsed from this page
     def report(short=nil)
-      putx "-------------------------------------------------"
+      puts "-------------------------------------------------"
       self.summary
-      putx "---- links found [#{self.has_links?.to_s} | #{self.links.size}]"
-      self.links.each_index { |i| putx "#{i.to_s} :: #{@links[i]}" } if short.nil?
-      putx "---- javascript found [#{self.has_jlinks?.to_s} | #{self.jlinks.size}]"
-      self.jlinks.each { |url| putx url } if short.nil?
-      putx "---- forms found [#{self.has_form?.to_s} | #{self.forms.size}]"
-      putx "---- comments found [#{self.has_comments?.to_s}]"
+      puts "---- links found [#{self.has_links?.to_s} | #{self.links.size}]"
+      self.links.each_index { |i| puts "#{i.to_s} :: #{@links[i]}" } if short.nil?
+      puts "---- javascript found [#{self.has_jlinks?.to_s} | #{self.jlinks.size}]"
+      self.jlinks.each { |url| puts url } if short.nil?
+      puts "---- forms found [#{self.has_form?.to_s} | #{self.forms.size}]"
+      puts "---- comments found [#{self.has_comments?.to_s}]"
       return nil
     end
 
@@ -32,13 +32,13 @@ module WWMD
     # IRB: display summary of what has been parsed from this page
     def summary
       status = self.page_status
-      putx "XXXX[#{self.report_flags}] | #{self.response_code.to_s} | #{status} | #{self.url} | #{self.size}"
+      puts "XXXX[#{self.report_flags}] | #{self.response_code.to_s} | #{status} | #{self.url} | #{self.size}"
       return nil
     end
 
     # IRB: display current headers
     def request_headers
-      self.headers.each_pair { |k,v| putx "#{k}: #{v}" }
+      self.headers.each_pair { |k,v| puts "#{k}: #{v}" }
       return nil
     end
 
@@ -47,7 +47,7 @@ module WWMD
 
     # IRB: display response headers
     def response_headers
-      self.header_data.each { |x| putx "#{x[0]} :: #{x[1]}" }
+      self.header_data.each { |x| puts "#{x[0]} :: #{x[1]}" }
       return nil
     end
 
@@ -55,18 +55,18 @@ module WWMD
 
     # display self.body_data
     def dump_body
-      putx self.body_data
+      puts self.body_data
     end
 
     alias_method :dump, :dump_body#:nodoc:
 
     # IRB: puts the page filtered through html2text
-    def to_text; putx self.html2text; end
+    def to_text; puts self.html2text; end
     def text; self.html2text; end
 
     # IRB: display a human readable report of all forms contained in page.body_data
     def all_forms
-      self.forms.each_index { |x| putx "[#{x.to_s}]-------"; self.forms[x].report }
+      self.forms.each_index { |x| puts "[#{x.to_s}]-------"; self.forms[x].report }
       nil
     end
 
@@ -91,8 +91,8 @@ module WWMD
   class Form
     def report
       return nil if not WWMD::console
-      putx "action = #{self.action}"
-      self.fields.each { |field| putx field.to_text }
+      puts "action = #{self.action}"
+      self.fields.each { |field| puts field.to_text }
       return nil
     end
     alias_method :show, :report

@@ -1,3 +1,21 @@
+== 0.2.17 / 2009-06-22
+
+* lots happening between here and .9
+* viewstate refactor complete
+* FormArray refactor includes the form action (full URL)
+  * page.submit(page.get_form)
+* still bugs in URLParse but hunting them down throw by throw
+* remove broken NTLM (preserve auth header warnings)
+* remove WWMDConfig in favor of WWMD module methods but preserve old class for back compat
+* add some burp helpers
+  * Page#from_paste (take entire request into Page and turn off cookies)
+  * burp log parsing coming
+* Curb includes http_put (with header munging bug so careful)
+* internal monkey patch for Curb to do arbitrary verb tampering (not here yet)
+* add String#pbcopy
+* move lots of things around for clarity during refactor
+* refactor progressing but still unstable (2.0.16 gem including viewstate is good to go)
+
 == 0.2.9 / 2009-05-05
 
 * bonesify
