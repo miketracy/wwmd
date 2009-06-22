@@ -235,7 +235,8 @@ module WWMD
     alias_method :squeeze_keys!, :remove_null_keys!
 
     # dump a web page containing a csrf example of the current FormArray
-    def to_csrf(action,unescval=false)
+    def to_csrf(action=nil,unescval=false)
+      action = self.action if not action
       ret = ""
       ret << "<html><body>\n"
       ret << "<form method='post' id='wwmdtest' name='wwmdtest' action='#{action}'>\n"
