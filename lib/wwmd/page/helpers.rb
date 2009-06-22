@@ -12,9 +12,11 @@ module WWMD
       h = h.split("\r\n")
       m,u,p = h.shift.split(" ")
       return nil unless m =~ (/^(POST|GET)/)
-      self.url = self.opts[:base_url] + u
+      self.url = self.base_url + u
       self.headers_from_array(h)
-      return b.to_form
+      form = b.to_form
+      form.action = @urlparse.parse(self.base_url, u).to_s
+      form
     end
   end
 end
