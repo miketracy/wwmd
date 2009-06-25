@@ -12,11 +12,15 @@ right thing.
 =end
 
 module WWMD
-  attr_accessor :action
   class FormArray < Array
+    attr_accessor :action
+    attr_accessor :delimiter
+    attr_accessor :equals
 
     def initialize(fields=nil,action=nil,&block)
       set_fields(fields)
+      @delimiter = "&"
+      @equals = "="
       @action = action
       instance_eval(&block) if block_given?
     end
@@ -40,8 +44,8 @@ module WWMD
       elsif fields.class == Hash
         fields.each_pair { |k,v| self[k] = v }
       elsif fields.class == String
-        fields.split("&").each do |f|
-          k,v = f.split("=",2)
+        fields.split(@delimiter).each do |f|
+          k,v = f.split(@equals,2)
           self[k] = v
         end
       end
@@ -74,18 +78,6 @@ module WWMD
       self << [key,value]
     end
 
-    def clear_viewstate
-      self.each { |k,v|
-        self[k] = "" if k =~ /^__/
-      }
-    end
-
-    def rm_viewstate
-      self.replace(self.map { |k,v| [k,v] if not k =~ /^__/ }.reject { |x| x.nil? })
-    end
-
-    alias_method :extend!, :add #:nodoc (this is here for backward compat)
-
     # key = Fixnum set value at index key
     # key = String find key named string and set value
     def set_value!(key,value)
@@ -101,6 +93,8 @@ module WWMD
       return [key,value]
     end
 
+    # get a value using its index
+    # override Array#[]
     alias_method :old_get, :[]#:nodoc:
     def [](*args)
       if args.first.class == Fixnum
@@ -147,6 +141,10 @@ module WWMD
 
     alias_method :get, :get_value
 
+    def keys
+      self.map { |k,v| k }
+    end
+
     def setall!(value)
       self.each_index { |i| self.set_value!(i,value) }
     end
@@ -190,36 +188,6 @@ module WWMD
 
     alias_method :unescape_all, :unescape_all!#:nodoc:
 
-    # convert form into a post parameters string
-    def to_post
-      ret = []
-      self.each do |i|
-        ret.push(i.join("="))
-      end
-      ret.join("&")
-    end
-
-    # convert form into a get parameters string
-    #
-    # pass me a base to get a full url to pass to Page.get
-    def to_get(base="")
-      ret = []
-      self.each do |i|
-        ret.push(i.join("="))
-      end
-      ret = ret.join("&")
-      return base.clip + "?" + ret.to_s
-    end
-
-    # add viewstate stuff
-    def add_viewstate#:nodoc:
-      self.insert(0,[ "__VIEWSTATE","" ])
-      self.insert(0,[ "__EVENTARGUMENT","" ])
-      self.insert(0,[ "__EVENTTARGET","" ])
-      self.insert(0,[ "__EVENTVALIDATION","" ])
-      return nil
-    end
-
     # remove form elements with null values
     def remove_nulls!
       self.delete_if { |x| x[1].to_s.empty? || x[1].nil? }
@@ -233,6 +201,57 @@ module WWMD
     end
 
     alias_method :squeeze_keys!, :remove_null_keys!
+
+## viewstate
+
+    # clear viewstate variables
+    def clear_viewstate
+      self.each { |k,v|
+        self[k] = "" if k =~ /^__/
+      }
+    end
+
+    # remove viewstate variables
+    def rm_viewstate
+      # my least favorite ruby idiom
+      self.replace(self.map { |k,v| [k,v] if not k =~ /^__/ }.reject { |x| x.nil? })
+    end
+
+    alias_method :extend!, :add #:nodoc (this is here for backward compat)
+
+    # add viewstate stuff
+    def add_viewstate#:nodoc:
+      self.insert(0,[ "__VIEWSTATE","" ])
+      self.insert(0,[ "__EVENTARGUMENT","" ])
+      self.insert(0,[ "__EVENTTARGET","" ])
+      self.insert(0,[ "__EVENTVALIDATION","" ])
+      return nil
+    end
+
+## conversions
+
+    # convert form into a post parameters string
+    def to_post
+      ret = []
+      self.each do |i|
+        ret << i.join(@equals)
+      end
+      ret.join(@delimiter)
+    end
+
+    # convert form into a get parameters string
+    #
+    # pass me a base to get a full url to pass to Page.get
+    def to_get(base="")
+      ret = []
+      self.each do |i|
+        ret << i.join(@equals)
+      end
+      ret = ret.join(@delimiter)
+      return base.clip + "?" + ret.to_s
+    end
+
+## parsing convenience
 
     # dump a web page containing a csrf example of the current FormArray
     def to_csrf(action=nil,unescval=false)
@@ -250,17 +269,14 @@ module WWMD
       return ret
     end
 
-    def keys
-      self.map { |k,v| k }
-    end
-
+    # add markers for burp intruder to form
     def burpify #:nodoc:
       ret = self.clone
       ret.each_index do |i|
         next if ret[i][0] =~ /^__/
         ret.set_value!(i,"#{ret.get_value(i)}" + "\302\247" + "\302\247")
       end
-      system("echo '#{ret.to_post}' | pbcopy")
+      ret.to_post.pbcopy
       return ret
     end
 
@@ -269,6 +285,11 @@ module WWMD
       return self.map { |k,v| k }.sort.to_s.md5
     end
     alias_method :fp, :fingerprint #:nodoc:
+
+    def from_array(arr)
+      self.clear
+      arr.each { |k,v| self[k] = v }
+    end
 
   end
 end
