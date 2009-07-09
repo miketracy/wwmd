@@ -27,11 +27,11 @@ module WWMD
 
     def initialize(opts={}, &block)
       @opts = opts.clone
-      DEFAULTS.each { |k,v| @opts[k] = v if not opts[k] }
+      DEFAULTS.each { |k,v| @opts[k] = v unless opts[k] }
       @spider = Spider.new(opts)
       @scrape = Scrape.new
       @base_url ||= opts[:base_url]
-      @scrape.warn = opts[:scrape_warn] if !opts[:scrape_warn].nil?
+      @scrape.warn = opts[:scrape_warn] if !opts[:scrape_warn].nil? # yeah yeah... bool false
       @urlparse = URLParse.new()
       @inputs = Inputs.new(self)
       @logged_in = false
@@ -42,9 +42,11 @@ module WWMD
 
       @curl_object = Curl::Easy.new
       @opts.each do |k,v|
-        next if !(@curl_object.methods.include?("#{k}="))
         next if k == :proxy_url
-        @curl_object.send("#{k}=",v)
+        self.instance_variable_set("@#{k.to_s}".intern,v)
+        if (@curl_object.methods.include?("#{k}="))
+          @curl_object.send("#{k}=",v)
+        end
       end
       @curl_object.on_body   { |data| self._body_cb(data) }
       @curl_object.on_header { |data| self._header_cb(data) }
@@ -85,9 +87,8 @@ module WWMD
       @scrape.reset(self.body_data)
       @inputs.set
 
-      @comments = @scrape.for_comments
       # remove comments that are css selectors for IE silliness
-      @comments.reject! do |c|
+      @comments = @scrape.for_comments.reject do |c|
         c =~ /\[if IE\]/ ||
         c =~ /\[if IE \d/ ||
         c =~ /\[if lt IE \d/
@@ -96,10 +97,9 @@ module WWMD
         @urlparse.parse(self.last_effective_url,url).to_s
       end
       @jlinks = @scrape.for_javascript_links
-      @forms = []
-      self.search("//form").each { |f| @forms << Form.new(f) }
+      @forms = @scrape.for_forms
       @spider.add(self.last_effective_url,@links)
-      return [self.code,self.page_status,self.body_data.size]
+      return [self.code,self.body_data.size]
     end
 
     # clear self.body_data and self.header_data
@@ -125,10 +125,8 @@ module WWMD
       rescue => e
         @last_error = e
         putw "WARN: #{e.class}" if e.class =~ /Curl::Err/
-#        self.logged_in = false
       end
       self.set_data
-      return [self.code,self.page_status,self.body_data.size]
     end
 
     # replacement for Curl::Easy.http_post
@@ -150,8 +148,8 @@ module WWMD
       self.clear_data
       ["Expect","X-Forwarded-For","Content-length"].each { |s| self.clear_header(s) }
       self.headers["Referer"] = self.cur if self.use_referer
-      if iform == nil
-        if not self.form.empty?
+      unless iform
+        unless self.form.empty?
           sform = self.form.clone
         else
           return "no form provided"
@@ -166,12 +164,7 @@ module WWMD
       else
         self.http_post(self.post_data = sform.to_post)
       end
-      begin
-        self.set_data
-      rescue => e
-        STDERR.puts "FATAL: could not parse page"
-      end
-      return [self.code, self.body_data.size]
+      self.set_data
     end
 
     # submit a form using POST string
@@ -180,7 +173,6 @@ module WWMD
       self.http_post(post_string)
       putw "WARN: authentication headers in response" if self.auth?
       self.set_data
-      return [self.code, self.body_data.size]
     end
 
     # override for Curl::Easy.perform
@@ -198,7 +190,6 @@ module WWMD
       self.perform
       putw "WARN: authentication headers in response" if self.auth?
       self.set_data
-      return [self.code, self.body_data.size]
     end
 
     # GET with params and POST it as a form
@@ -217,7 +208,6 @@ module WWMD
       self.headers["Referer"] = self.cur if self.use_referer
       self.http_verb(verb)
       self.set_data
-      return [self.code, self.body_data.size]
     end
 
 #:section: Data callbacks and method_missing

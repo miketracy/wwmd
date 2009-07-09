@@ -1,3 +1,5 @@
+# o hai!  I need your help.
+
 module WWMD
   LINKS_REGEXP = [
     /window\.open\s*\(([^\)]+)/i,
@@ -8,27 +10,13 @@ module WWMD
     /Ajax\.Request\s*\((['"][^'"]+['"])/i,
   ]
 
-  AJAX_REGEXP = [
-    /Ajax\.Request\s*\((['"][^'"]+['"])/i,
-  ]
-
-  SRC_REGEXP = [
-    /src=\s*(['"][^'"]+['"])/i
-  ]
-
-#  NOT_URL_CHAR = "[^0-9a-zA-Z\:\/\+\\-\%\#]"
-
   class Scrape
 
     attr_accessor :debug
     attr_accessor :warn
     attr_accessor :links  # links found on page
     attr_accessor :jlinks # links to javascript includes
-
     attr_reader :hdoc
-
-    @debug    = false
-    @warn     = true
 
     # create a new scrape object using passed HTML
     def initialize(page='<>')
@@ -36,7 +24,7 @@ module WWMD
       @hdoc = HDOC.parse(@page)
       @links = Array.new
       @debug = false
-      @warn  = true
+      @warn = false
     end
 
     # reset this scrape object (called by WWMD::Page)
@@ -93,10 +81,11 @@ module WWMD
       end
     end
 
-    # define an urls_from_helper method in your task specific script
-    def urls_from_helper
-      putw "WARN: Please set an urls_from_helper override in your helper script" if @warn
-      return nil
+    # return an array of Form objects for forms on page
+    def for_forms
+      ret = []
+      @hdoc.search("//form").each { |f| ret << Form.new(f) }
+      ret
     end
 
     # use xpath searches to get
@@ -198,5 +187,12 @@ module WWMD
     def warnings#:nodoc:
       return @warn
     end
+
+    # define an urls_from_helper method in your task specific script
+    def urls_from_helper
+      putw "WARN: Please set an urls_from_helper override in your helper script" if @warn
+      return nil
+    end
+
   end
 end

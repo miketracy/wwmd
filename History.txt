@@ -2,6 +2,9 @@
 
 * lots happening between here and .9
 * viewstate refactor complete
+* clean up page/page.rb
+* cleaning up page/headers.rb
+* cleaning up page/scrape.rb
 * FormArray refactor includes the form action (full URL)
   * page.submit(page.get_form)
 * still bugs in URLParse but hunting them down throw by throw

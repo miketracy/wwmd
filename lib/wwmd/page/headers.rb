@@ -25,58 +25,62 @@ module WWMD
     #
     #  if clear == true then headers will be cleared before setting
     def set_headers(arg=nil,clear=false)
-      self.clear_headers if clear
+      clear_headers if clear
       if arg.nil?
         begin
-          self.clear_headers
+          clear_headers
           WWMD::DEFAULT_HEADERS.each { |k,v| self.headers[k] = v }
           return "headers set from default"
         rescue => e
           putw "WARN: " + e
-          return "error setting headers"
+          return false
         end
       elsif arg.class == Symbol
-        self.set_headers(WWMD::HEADERS[arg])
-        return "headers set from #{arg}"
+        set_headers(WWMD::HEADERS[arg])
+        putw "headers set from #{arg}"
+        return true
       elsif arg.class == Hash
         arg.each { |k,v| self.headers[k] = v }
-        return "headers set from hash"
+        putw "headers set from hash"
+        return true
       end
-      "error setting headers"
+      putw "error setting headers"
+      return false
     end
 
     # set headers back to default headers
     def default_headers(arg=nil)
-      self.set_headers
+      set_headers
     end
 
     alias_method :set_default, :default_headers
 
     # set headers from text
     def headers_from_array(arr)
-      self.clear_headers
+      clear_headers
       arr.each do |line|
-        h = line.split(":",2)
-        next if h[1].class != String
-        self.headers[h[0]] = h[1].strip
+        next if (line.empty? || line =~ /^(GET|POST)/)
+        k,v = line.split(":",2)
+        self.headers[k.strip] = v.strip
       end
+      nil
+    end
+
+    # set headers from paste
+    def headers_from_paste
+      headers_from_array(%x[pbpaste])
     end
 
     # set headers from file
     def headers_from_file(fn)
-      self.clear_headers
-      File.read(fn).each do |line|
-        h = line.split(":",2)
-        next if h[1].class != String
-        self.headers[h[0]] = h[1].strip
-      end
-      return nil
+      headers_from_array(File.read(fn).split("\n"))
+      return "headers set from #{fn}"
     end
 
     # set headers to utf7 encoding post
     def set_utf7_headers
       self.headers["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-7"
-      "headers set to utf7"
+      return "headers set to utf7"
     end
 
     # set headers to ajax

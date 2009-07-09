@@ -88,6 +88,8 @@ class String
     return [self.clip,self.clop]
   end
 
+  alias_method :clipa, :clopa
+
   # File.dirname with a trailing slash
   def dirname
     return self if self.match(/\/$/)
@@ -95,8 +97,12 @@ class String
   end
 
   # File.basename
-  def basename
-    File.basename(self)
+  def basename(ext=nil)
+    if ext
+      File.basename(self,ext)
+    else
+      File.basename(self)
+    end
   end
 
   def extname

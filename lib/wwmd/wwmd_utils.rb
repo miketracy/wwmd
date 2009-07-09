@@ -1,6 +1,6 @@
 module WWMDUtils
 
-  def header_array_from_file(filename)
+  def self.header_array_from_file(filename)
     ret = Hash.new
     File.readlines(filename).each do |line|
       a = line.chomp.split(/\t/,2)
@@ -9,7 +9,7 @@ module WWMDUtils
     return ret
   end
 
-  def ranstr(len=8,digits=false)
+  def self.ranstr(len=8,digits=false)
     chars = ("a".."z").to_a
     chars += ("0".."9").to_a if digits
     ret = ""
@@ -17,7 +17,7 @@ module WWMDUtils
     return ret
   end
 
-  def rannum(len=8,hex=false)
+  def self.rannum(len=8,hex=false)
     chars = ("0".."9").to_a
     chars += ("A".."F").to_a if hex
     ret = ""
