@@ -23,11 +23,11 @@ module WWMD
 
     # pass me opts and an array of regexps to ignore
     # we have a set of sane(ish) defaults here
-    def initialize(opts={},ignore=nil)
+    def initialize(opts={},ignore=nil,&block)
+      @block ||= block
       @opts    = opts
       @visited = []
       @queued  = []
-      @bypass  = []
       @local_only = true
       @csrf_token = nil
       if !opts[:spider_local_only].nil?
@@ -39,31 +39,30 @@ module WWMD
     # push an url onto the queue
     def push_url(url)
       return false if _check_ignore(url)
-      url = _de_csrf(url)
       if @local_only
         return false if !(url =~ /#{@opts[:base_url]}/)
       end
-      @bypass.each { |b| return true if (url =~ b) }
-      @queued.push(url) if (@visited.find { |v| v == url }.nil? and @queued.find { |q| q == url }.nil?)
-      return true
+      return false if (@visited.include?(url) or @queued.include?(url))
+      @queued.push(url)
+      true
     end
 
     # skip items in the queue
     def skip(tim=1)
       tim.times { |i| @queued.shift }
-      return true
+      true
     end
 
     # get the next url in the queue
     def get_next
-      return queued.shift
+      queued.shift
     end
 
     alias_method :next, :get_next
 
     # more elements in the queue?
     def next?
-      return !queued.empty?
+      !queued.empty?
     end
 
     # get the last ul we visited?  this doesn't look right
@@ -98,9 +97,10 @@ module WWMD
 
     # add url to queue
     def add(url='',links=[])
-      @visited.push(_de_csrf(url))
+      return nil if @visited.include?(url)
+      @visited.push(url)
       links.each { |l| self.push_url l }
-      return nil
+      nil
     end
 
     # set up the ignore list
