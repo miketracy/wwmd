@@ -14,6 +14,7 @@ right thing.
 module WWMD
   class FormArray < Array
     attr_accessor :action
+    attr_accessor :type
     attr_accessor :delimiter
     attr_accessor :equals
 

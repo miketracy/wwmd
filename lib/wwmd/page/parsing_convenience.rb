@@ -15,9 +15,11 @@ module WWMD
       return nil if forms.empty? || !forms[id]
       f = @forms[id]
       url_action = @urlparse.parse(self.cur,f.action).to_s
+      type = f.type
       FormArray.new do |x|
         x.set_fields(f.fields)
         x.action = url_action
+        x.type   = type
       end
     end
 

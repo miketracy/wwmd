@@ -41,7 +41,7 @@ module WWMD
       opts.on("--no_auth","no login before getting url")   { |v| inopts[:use_auth] = false }
       opts.on("--debug","debugging really doesn't work")   { |v| inopts[:debug] = true }
       opts.on_tail("-h", "--help", "Show this message") do
-        putx opts
+        puts opts
         exit
       end
     end

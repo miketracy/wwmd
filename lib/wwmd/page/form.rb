@@ -40,6 +40,10 @@ module WWMD
       return self.get_attribute("action")
     end
 
+    def type
+      return self.get_attribute("method")
+    end
+
   end
 
   class Field < Form
