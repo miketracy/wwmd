@@ -23,8 +23,7 @@ module WWMD
 
     # pass me opts and an array of regexps to ignore
     # we have a set of sane(ish) defaults here
-    def initialize(opts={},ignore=nil,&block)
-      @block ||= block
+    def initialize(opts={},ignore=nil)
       @opts    = opts
       @visited = []
       @queued  = []
@@ -46,6 +45,7 @@ module WWMD
       @queued.push(url)
       true
     end
+    alias_method :push, :push_url
 
     # skip items in the queue
     def skip(tim=1)
