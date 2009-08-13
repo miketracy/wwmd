@@ -44,10 +44,10 @@ module WWMD
       raise "Invalid ViewState" if not self.magic?
       @obj_queue << self.deserialize_value
       if @bufarr.size == 20 then
-        @mac = bufarr.slice!(0..19).join("")
+        @mac = @bufarr.slice!(0..19).join("")
         dlog(0x00,"MAC = #{@mac.hexify}")
       end
-      raise "Error Parsing Viewstate (left: #{@buffarr.size})" if not @bufarr.size == 0
+      raise "Error Parsing Viewstate (left: #{@bufarr.size})" if not @bufarr.size == 0
       return !self.raw.nil?
     end
 
