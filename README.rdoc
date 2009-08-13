@@ -39,9 +39,9 @@ check the wiki regularly.
 
 * rubygems
 * ruby-debug
-* curb
-* nokogiri
-* hpricot (for the time being)
+* curb (taf2-curb located here on github)
+* nokogiri >= 1.3.2
+* hpricot (not used by default)
 * htmlentities
 
 == INSTALL
