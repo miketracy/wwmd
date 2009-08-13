@@ -200,7 +200,7 @@ module WWMD
       self.submit(form)
     end
 
-    # send arbitrary verb (only works with patch to taf2-curb
+    # send arbitrary verb (only works with patch to taf2-curb)
     def verb(verb,url=nil)
       return false if !@curl_object.respond_to?(:http_verb)
       self.url = url if url
