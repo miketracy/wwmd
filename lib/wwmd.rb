@@ -15,7 +15,7 @@ require 'rexml/document'
 module WWMD
 
   # :stopdoc:
-  VERSION = "0.2.18"
+  VERSION = "0.2.19"
   PARSER = :nokogiri  # :nokogiri || :hpricot
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
