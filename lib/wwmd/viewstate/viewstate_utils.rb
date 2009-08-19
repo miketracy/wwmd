@@ -53,17 +53,16 @@ module WWMD
     def read_string
       len = read_7bit_encoded_int
       starr = []
-      (1..len).each { |i| starr << @bufarr.shift }
+      (1..len).each { |i| starr << @buf.read(1) }
       return starr.to_s
-#      @bufarr.slice!(0..(len - 1)).join("")
     end
 
     def read(count)
-      @bufarr.slice!(0..(count - 1)).join("")
+      @buf.read(count)
     end
 
     def read_int
-      @bufarr.shift.unpack("C").first
+      @buf.read(1).unpack("C").first
     end
     alias_method :read_byte, :read_int
 
@@ -81,7 +80,7 @@ module WWMD
     end
 
     def read_int32
-      @bufarr.slice!(0..3).join("").unpack("L").first
+      @buf.read(4).unpack("L").first
     end
     alias_method :read_single, :read_int32
 
@@ -91,7 +90,7 @@ module WWMD
     alias_method :write_single, :write_int32
 
     def read_double
-      @bufarr.slice!(0..7).join("").unpack("Q").first
+      @buf.read(8).unpack("Q").first
     end
 
     def write_double(val)
@@ -99,12 +98,12 @@ module WWMD
     end
 
     def magic?
-      @magic = [@bufarr.shift,@bufarr.shift].join("")
+      @magic = [@buf.read(1),@buf.read(1)].join("")
       VIEWSTATE_MAGIC.include?(@magic)
     end
 
     def read_raw_byte
-      @bufarr.shift
+      @buf.read
     end
 
     def serialize_type(op,ref)
@@ -143,18 +142,21 @@ module WWMD
     end
 
     def offset(cur=nil)
-        (self.size - @bufarr.size).to_s(16).rjust(8,"0")
+        @buf.pos.to_s(16).rjust(8,"0")
     end
 
     def throw(t=nil)
+      puts t.class
       STDERR.puts "==== Error at Type 0x#{t.to_s(16).rjust(2,"0")}"
       STDERR.puts "offset: #{self.offset}"
-      STDERR.puts "left:   #{@bufarr.size}"
-      STDERR.puts @bufarr[0..31].join("").hexdump
+      STDERR.puts "left:   #{@buf.size}"
+      STDERR.puts @buf.read(32).hexdump
     end
 
     def next_type
-      t = @bufarr.first.unpack("C").first
+      b = @buf.pos
+      t = read_byte
+      @buf.pos = b
       throw(t) if not VIEWSTATE_TYPES.include?(t)
       VIEWSTATE_TYPES[t]
     end

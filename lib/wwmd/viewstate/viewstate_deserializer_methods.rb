@@ -201,11 +201,11 @@ module WWMD
 
     # deserialize_value
     def deserialize_value
-      @last_offset = self.offset
+      @last_offset = @buf.pos
       token = self.read_byte # self.read_raw_byte
       if not (tsym = VIEWSTATE_TYPES[token])
         STDERR.puts "TOKEN: [0x#{token.to_s(16)}] at #{last_offset}"
-        STDERR.puts @bufarr.slice(0..31).join("").hexdump
+        STDERR.puts @buf.read(32).hexdump
         raise "Invalid Type [0x#{token.to_s(16)}] at #{last_offset}" if not (tsym = VIEWSTATE_TYPES[token])
       end
       nobj = self.send(tsym,token)

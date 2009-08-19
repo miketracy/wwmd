@@ -6,7 +6,7 @@ module WWMD
     attr_accessor :debug
     attr_reader   :raw
     attr_reader   :stack
-    attr_reader   :bufarr
+    attr_reader   :buf
     attr_reader   :magic
     attr_reader   :size
     attr_reader   :indexed_strings
@@ -20,7 +20,6 @@ module WWMD
       @raw = ""
       @stack = ""
       @obj_queue = []
-      @bufarr = []
       @size = 0
       @indexed_strings = []
       @mac = nil
@@ -39,15 +38,15 @@ module WWMD
       @obj_queue = []
       @b64 = b64 if b64
       @raw = @b64.b64d
-      @bufarr = @raw.scan(/./m)
-      @size = @bufarr.size
+      @buf = StringIO.new(@raw)
+      @size = @buf.size
       raise "Invalid ViewState" if not self.magic?
       @obj_queue << self.deserialize_value
-      if @bufarr.size == 20 then
-        @mac = @bufarr.slice!(0..19).join("")
+      if (@buf.size - @buf.pos) == 20 then
+        @mac = @buf.read(20)
         dlog(0x00,"MAC = #{@mac.hexify}")
       end
-      raise "Error Parsing Viewstate (left: #{@bufarr.size})" if not @bufarr.size == 0
+      raise "Error Parsing Viewstate (left: #{@buf.size - @buf.pos})" if not (@buf.size - @buf.pos) == 0
       return !self.raw.nil?
     end
 
