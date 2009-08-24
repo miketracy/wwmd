@@ -283,7 +283,7 @@ module WWMD
 
     # return md5 hash of sorted list of keys
     def fingerprint
-      return self.map { |k,v| k }.sort.to_s.md5
+      return (self.action.to_s + self.map { |k,v| k }.sort.to_s).md5
     end
     alias_method :fp, :fingerprint #:nodoc:
 

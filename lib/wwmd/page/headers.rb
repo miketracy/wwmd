@@ -58,6 +58,7 @@ module WWMD
     # set headers from text
     def headers_from_array(arr)
       clear_headers
+      arr = arr.split("\r\n\r\n").first if arr.class == String
       arr.each do |line|
         next if (line.empty? || line =~ /^(GET|POST)/)
         k,v = line.split(":",2)

@@ -1,27 +1,27 @@
 module WWMD
-  attr_accessor :curl_object
-  attr_accessor :body_data
-  attr_accessor :post_data
-  attr_accessor :header_data
-  attr_accessor :use_referer
-  attr_reader   :forms
-  attr_reader   :last_error
-  attr_reader   :links         # array of links (urls)
-  attr_reader   :jlinks        # array of included javascript files
-  attr_reader   :spider        # spider object
-  attr_reader   :scrape        # scrape object
-  attr_reader   :urlparse      # urlparse object
-  attr_reader   :comments
-
-  attr_accessor :base_url      # needed to properly munge relative urls into fq urls
-  attr_accessor :logged_in     # are we logged in?
-
-  attr_accessor :opts
-  attr_accessor :inputs
-
   # WWMD::Page is an extension of a Curl::Easy object which provides methods to
   # enhance and ease the performance of web application penetration testing.
   class Page
+    attr_accessor :curl_object
+    attr_accessor :body_data
+    attr_accessor :post_data
+    attr_accessor :header_data
+    attr_accessor :use_referer
+    attr_reader   :forms
+    attr_reader   :last_error
+    attr_reader   :links         # array of links (urls)
+    attr_reader   :jlinks        # array of included javascript files
+    attr_reader   :spider        # spider object
+    attr_reader   :scrape        # scrape object
+    attr_reader   :urlparse      # urlparse object
+    attr_reader   :comments
+
+    attr_accessor :base_url      # needed to properly munge relative urls into fq urls
+    attr_accessor :logged_in     # are we logged in?
+
+    attr_accessor :opts
+    attr_accessor :inputs
+
 
     include WWMDUtils
 
@@ -106,6 +106,7 @@ module WWMD
     def clear_data
       return false if self.opts[:parse] = false
       @body_data = ""
+      @post_data = nil
       @header_data.clear
       @last_error = nil
     end
@@ -182,12 +183,14 @@ module WWMD
     #
     # returns: <tt>array [ code, body_data.size ]</tt>
     def get(url=nil,parse=true)
+      self.clear_data
+      self.headers["Referer"] = self.cur if self.use_referer
       if !(url =~ /[a-z]+:\/\//) && parse
         self.url = @urlparse.parse(self.opts[:base_url],url).to_s if url
       elsif url
         self.url = url
       end
-      self.perform
+      self.http_get
       putw "WARN: authentication headers in response" if self.auth?
       self.set_data
     end
@@ -221,17 +224,13 @@ module WWMD
     # callback for <tt>self.on_header</tt>
     def _header_cb(data)
       myArr = Array.new(data.split(":",2))
-      @header_data.extend! myArr[0].to_s.strip,myArr[1].to_s.strip
+      @header_data[myArr[0].to_s.strip] = myArr[1].to_s.strip
       return data.length.to_i
     end
 
     # send methods not defined here to <tt>@curl_object</tt>
     def method_missing(methodname, *args)
-      if WWMD.respond_to?(methodname)
-        WWMD.send(methodname, *args)
-      else
-        @curl_object.send(methodname, *args)
-      end
+      @curl_object.send(methodname, *args)
     end
 
   end
