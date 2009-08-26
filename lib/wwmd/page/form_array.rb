@@ -243,13 +243,13 @@ module WWMD
     # convert form into a get parameters string
     #
     # pass me a base to get a full url to pass to Page.get
-    def to_get(base="")
+    def to_get(base=nil)
       ret = []
       self.each do |i|
         ret << i.join(@equals)
       end
       ret = ret.join(@delimiter)
-      return base.clip + "?" + ret.to_s
+      return base.to_s.clip + "?" + ret.to_s
     end
 
 ## parsing convenience
