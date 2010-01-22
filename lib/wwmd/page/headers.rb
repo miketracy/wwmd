@@ -3,6 +3,10 @@ module WWMD
 
 #:section: Header helper methods
 
+    def user_agent=(ua)
+      self.headers["User-Agent"] = ua
+    end
+
     # clear header at <key>
     def clear_header(key)
       self.headers.delete_if { |k,v| k.upcase == key.upcase }
@@ -66,6 +70,7 @@ module WWMD
       end
       nil
     end
+#; 
 
     # set headers from paste
     def headers_from_paste
@@ -74,6 +79,7 @@ module WWMD
 
     # set headers from file
     def headers_from_file(fn)
+      clear_headers
       headers_from_array(File.read(fn).split("\n"))
       return "headers set from #{fn}"
     end

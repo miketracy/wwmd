@@ -34,6 +34,15 @@ end
 
 class String
 
+  def hexify
+    self.unpack("H*").first.upcase
+  end
+
+  def unhexify
+    [self].pack("H*")
+  end
+  alias_method :dehexify,:unhexify
+
   def strip_up
     self.gsub(/[^\x20-\x7e,\n]/,"").gsub(/^\n/,"")
   end
@@ -233,3 +242,8 @@ class File
     fout.close
   end
 end
+
+def pbpaste
+  %x[pbpaste]
+end
+

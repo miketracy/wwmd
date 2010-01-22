@@ -36,6 +36,7 @@ class String
   # shortcut for hex sanity with regex
   def ishex? ; (self =~ /^[a-f0-9]+$/i)? true : false ; end 
 
+=begin
   # Convert a string to ASCII hex string
   # supports a few options for format:
   #   :delim - delimter between each hex byte
@@ -78,6 +79,7 @@ class String
     out.string
   end
   alias_method :dehexify, :unhexify
+=end
 
   # ==========================================================================
   # Extends String class to return a hexdump in the style of 'hexdump -C'

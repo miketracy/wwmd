@@ -243,7 +243,8 @@ module WWMD
     # convert form into a get parameters string
     #
     # pass me a base to get a full url to pass to Page.get
-    def to_get(base=nil)
+    def to_get(base="")
+      return base if self.empty?
       ret = []
       self.each do |i|
         ret << i.join(@equals)
@@ -271,11 +272,16 @@ module WWMD
     end
 
     # add markers for burp intruder to form
-    def burpify #:nodoc:
+    def burpify(all=true) #:nodoc:
       ret = self.clone
       ret.each_index do |i|
         next if ret[i][0] =~ /^__/
-        ret.set_value!(i,"#{ret.get_value(i)}" + "\302\247" + "\302\247")
+#        ret.set_value!(i,"#{ret.get_value(i)}" + "\302\247" + "\302\247")
+        if all
+          ret.set_value!(i,"\244" + "#{ret.get_value(i)}" + "\244")
+        else
+          ret.set_value!(i,"#{ret.get_value(i)}" + "\244" + "\244")
+        end          
       end
       ret.to_post.pbcopy
       return ret

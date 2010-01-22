@@ -1,7 +1,13 @@
 # third-party
 require 'rubygems'
-require 'ruby-debug'
-require 'curb'
+unless self.respond_to?(:java)
+  require 'ruby-debug'
+  require 'curb'
+else
+#  I_KNOW_I_AM_USING_AN_OLD_AND_BUGGY_VERSION_OF_LIBXML2 = true
+#  require 'curb_ffi'
+#  include CurbFfi
+end
 require 'yaml'
 require 'fileutils'
 require 'base64'
@@ -15,7 +21,7 @@ require 'rexml/document'
 module WWMD
 
   # :stopdoc:
-  VERSION = "0.2.20"
+  VERSION = "0.2.20.1"
   PARSER = :nokogiri  # :nokogiri || :hpricot
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR

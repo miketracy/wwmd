@@ -49,6 +49,7 @@ module WWMD
       raise "Error Parsing Viewstate (left: #{@buf.size - @buf.pos})" if not (@buf.size - @buf.pos) == 0
       return !self.raw.nil?
     end
+    alias_method :parse,:deserialize
 
     def serialize(objs=nil,version=2)
       @obj_queue = objs if objs

@@ -4,9 +4,9 @@ module WWMD
     # page object gets set with headers and url (not correct)
     # returns [headers,form]
     #   form = page.from_paste
-    def from_paste
+
+    def from_input(req)
       self.enable_cookies = false
-      req = %x[pbpaste]
       return false if not req
       h,b = req.chomp.split("\r\n\r\n",2)
       oh = h
@@ -20,6 +20,17 @@ module WWMD
       form = b.to_form
       form.action = @urlparse.parse(self.base_url, u).to_s
       [oh,form]
+    end
+
+    def from_file(fn)
+      h = headers.clone
+      ret = from_input(File.read(fn))
+      headers.replace(h)
+      ret
+    end
+
+    def from_paste
+      from_input(%x[pbpaste])
     end
 
     def resp_paste

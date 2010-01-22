@@ -1,5 +1,6 @@
 module WWMD
   class Page
+    attr_accessor :status
 #:section: Reporting helper methods
 # These are methods that generate data for a parsed page
 
@@ -8,11 +9,11 @@ module WWMD
     # override with specific statuses in helper depending on page text
     # etc to include statuses outside 200 = OK and other = ERR
     def page_status
-      return "ERR" if self.response_code != 200
-      return "OK"
+      @status = "OK"
+      @status = "ERR" if self.response_code > 399
     end
 
-    alias_method :status, :page_status#:nodoc:
+#    alias_method :status, :page_status#:nodoc:
 
     # return value of @logged_in
     def logged_in?
@@ -49,14 +50,15 @@ module WWMD
 
     # does this response have SET-COOKIE headers?
     def set_cookies?
-      ret = []
+      ret = FormArray.new()
       self.header_data.each do |x|
         if x[0].upcase == "SET-COOKIE"
-          ret << x[1]
+          ret << x[1].split(";").first.split("=",2)
         end
       end
-      return ret
+      ret
     end
+    alias_method :set_cookies, :set_cookies?
 
     def time
       self.total_time

@@ -16,6 +16,8 @@ module WWMD
     attr_reader   :urlparse      # urlparse object
     attr_reader   :comments
 
+    attr_reader   :header_file
+
     attr_accessor :base_url      # needed to properly munge relative urls into fq urls
     attr_accessor :logged_in     # are we logged in?
 
@@ -24,6 +26,11 @@ module WWMD
 
 
     include WWMDUtils
+
+    def inspect
+      # hack
+      return "Page"
+    end
 
     def initialize(opts={}, &block)
       @opts = opts.clone
@@ -39,6 +46,7 @@ module WWMD
       @post_data = ""
       @comments = []
       @header_data = FormArray.new
+      @header_file = nil
 
       @curl_object = Curl::Easy.new
       @opts.each do |k,v|
@@ -63,6 +71,15 @@ module WWMD
       if opts.empty? && @scrape.warn
         putw "Page initialized without opts"
         @scrape.warn = false
+      end
+
+      if @header_file
+        begin
+          headers_from_file(@header_file)
+          @curl_object.enable_cookies = false
+        rescue => e
+          puts "ERROR: #{e}"
+        end
       end
     end
 
@@ -186,7 +203,7 @@ module WWMD
       self.clear_data
       self.headers["Referer"] = self.cur if self.use_referer
       if !(url =~ /[a-z]+:\/\//) && parse
-        self.url = @urlparse.parse(self.opts[:base_url],url).to_s if url
+        self.url = @urlparse.parse(self.base_url,url).to_s if url
       elsif url
         self.url = url
       end
@@ -224,7 +241,8 @@ module WWMD
     # callback for <tt>self.on_header</tt>
     def _header_cb(data)
       myArr = Array.new(data.split(":",2))
-      @header_data[myArr[0].to_s.strip] = myArr[1].to_s.strip
+      @header_data.add(myArr[0].to_s.strip,myArr[1].to_s.strip)
+#      @header_data[myArr[0].to_s.strip] = myArr[1].to_s.strip
       return data.length.to_i
     end
 
