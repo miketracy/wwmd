@@ -34,8 +34,8 @@ module WWMD
 
     def initialize(opts={}, &block)
       @opts = opts.clone
-      DEFAULTS.each { |k,v| @opts[k] = v unless opts[k] }
-      @spider = Spider.new(opts)
+      DEFAULTS.each { |k,v| @opts[k] = v unless @opts.has_key?(k) }
+      @spider = Spider.new(@opts)
       @scrape = Scrape.new
       @base_url ||= opts[:base_url]
       @scrape.warn = opts[:scrape_warn] if !opts[:scrape_warn].nil? # yeah yeah... bool false
@@ -51,9 +51,10 @@ module WWMD
       @curl_object = Curl::Easy.new
       @opts.each do |k,v|
         next if k == :proxy_url
-        self.instance_variable_set("@#{k.to_s}".intern,v)
-        if (@curl_object.methods.include?("#{k}="))
-          @curl_object.send("#{k}=",v)
+        if (@curl_object.respond_to?("#{k}=".intern))
+          @curl_object.send("#{k}=".intern,v)
+        else
+          self.instance_variable_set("@#{k.to_s}".intern,v)
         end
       end
       @curl_object.on_body   { |data| self._body_cb(data) }
@@ -163,6 +164,7 @@ module WWMD
         reg = iform
         iform = nil
       end
+      reg = WWMD::ESCAPE[reg] if reg.class == Symbol
       self.clear_data
       ["Expect","X-Forwarded-For","Content-length"].each { |s| self.clear_header(s) }
       self.headers["Referer"] = self.cur if self.use_referer

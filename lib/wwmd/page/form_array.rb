@@ -256,14 +256,16 @@ module WWMD
 ## parsing convenience
 
     # dump a web page containing a csrf example of the current FormArray
-    def to_csrf(action=nil,unescval=false)
-      action = self.action if not action
+    def to_csrf(quot=nil,action=nil,unescval=false)
+      quot = "'" unless quot
+      action = self.action unless action
       ret = ""
       ret << "<html><body>\n"
-      ret << "<form method='post' id='wwmdtest' name='wwmdtest' action='#{action}'>\n"
+      ret << "<form method=#{quot}post#{quot} id=#{quot}wwmdtest#{quot} name=#{quot}wwmdtest#{quot} action=#{quot}#{action}#{quot}>\n"
       self.each do |key,val|
+        val.gsub!(/\+/," ")
         val = val.unescape.gsub(/'/) { %q[\'] } if unescval
-            ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val.to_s.unescape}' />\n"
+        ret << "<input name=#{quot}#{key.to_s.unescape}#{quot} type=#{quot}hidden#{quot} value=#{quot}#{val.to_s.unescape}#{quot} />\n"
       end
       ret << "</form>\n"
       ret << "<script>document.wwmdtest.submit()</script>\n"

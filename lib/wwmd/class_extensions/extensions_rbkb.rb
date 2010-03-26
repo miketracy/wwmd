@@ -131,6 +131,9 @@ class String
     end
   end
 
+  def hdp
+    puts hexdump
+  end
 
   # ==========================================================================
   # converts a hexdump back to binary - takes the same options as hexdump()

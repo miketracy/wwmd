@@ -39,7 +39,9 @@ module WWMD
       begin
         @base_url = @proto + "://" + @location
       rescue => e
-        dgb = WWMD.debug
+        return false
+        raise e
+        dbg = WWMD.debug
         WWMD.debug = true
         putd "ERROR in urlparse TRACE:"
         pp *args
