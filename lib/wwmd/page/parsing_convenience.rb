@@ -15,7 +15,9 @@ module WWMD
       return nil if forms.empty? || !forms[id]
       f = @forms[id]
       action = f.action
-      action ||= self.action
+      action ||= action
+      action ||= cur
+      action ||= "PARSE_ERROR"
       url_action = @urlparse.parse(self.cur,action).to_s
       type = f.type
       FormArray.new do |x|

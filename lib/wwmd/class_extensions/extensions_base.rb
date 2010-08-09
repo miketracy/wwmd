@@ -121,9 +121,9 @@ class String
   # write string to passed filename
   # if filename is nil? will raise an error
   def write(fname=nil)
-    raise "filename required" if fname.nil?
+    raise "filename required" unless fname
     File.write(fname,self)
-    return fname
+    self
   end
 
   # parse passed GET param string into a form and return the FormArray object
