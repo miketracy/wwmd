@@ -1,34 +1,16 @@
-# Look in the tasks/setup.rb file for the various options that can be
-# configured in this Rakefile. The .rake files in the tasks directory
-# are where the options are used.
-
 begin
-  require 'bones'
-  Bones.setup
-rescue LoadError
-  begin
-    load 'tasks/setup.rb'
-  rescue LoadError
-    raise RuntimeError, '### please install the "bones" gem ###'
+  require 'jeweler'
+  require 'wwmd'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "wwmd"
+    gemspec.version = WWMD::VERSION
+    gemspec.summary = "framework and helpers for conducting web application security assessments"
+    gemspec.description = ""
+    gemspec.email = "mtracy@matasano.com"
+    gemspec.homepage = "http://github.com/miketracy/wwmd/tree/master"
+    gemspec.authors = ["Mike Tracy"]
   end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler not available. Install it with: gem install jeweler"
 end
-
-ensure_in_path 'lib'
-require 'wwmd'
-
-task :default => 'spec:run'
-
-PROJ.name = 'wwmd'
-PROJ.authors = 'Michael L. Tracy'
-PROJ.email = 'mtracy@matasano.com'
-PROJ.url = 'http://github.com/miketracy/wwmd/tree/master'
-PROJ.version = WWMD::VERSION
-#PROJ.rubyforge.name = 'wwmd'
-
-PROJ.spec.opts << '--color'
-
-depend_on 'ruby-debug'
-depend_on 'curb'
-depend_on 'nokogiri'
-
-# EOF

@@ -112,7 +112,7 @@ module WWMD
         c =~ /\[if lt IE \d/
       end
       @links = @scrape.for_links.map do |url|
-        @urlparse.parse(self.last_effective_url,url).to_s
+        l = @urlparse.parse(self.last_effective_url,url).to_s
       end
       @jlinks = @scrape.for_javascript_links
       @forms = @scrape.for_forms

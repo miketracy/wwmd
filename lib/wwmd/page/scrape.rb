@@ -1,5 +1,3 @@
-# o hai!  I need your help.
-
 module WWMD
   LINKS_REGEXP = [
     /window\.open\s*\(([^\)]+)/i,
@@ -98,11 +96,11 @@ module WWMD
     # then get //script tags and regexp out links in javascript function calls
     # from elem.inner_html
     def for_links(reject=true)
-      self.urls_from_xpath("//a","href").each { |url| @links << url };      # get <a href=""> elements
-      self.urls_from_xpath("//area","href").each { |url| @links << url };   # get <area href=""> elements
-      self.urls_from_xpath("//frame","src").each { |url| @links << url };   # get <frame src=""> elements
-      self.urls_from_xpath("//iframe","src").each { |url| @links << url };  # get <iframe src=""> elements
-      self.urls_from_xpath("//form","action").each { |url| @links << url }; # get <form action=""> elements
+      self.urls_from_xpath("//a","href").each      { |url| @links << url } # get <a href=""> elements
+      self.urls_from_xpath("//area","href").each   { |url| @links << url } # get <area href=""> elements
+      self.urls_from_xpath("//frame","src").each   { |url| @links << url } # get <frame src=""> elements
+      self.urls_from_xpath("//iframe","src").each  { |url| @links << url } # get <iframe src=""> elements
+      self.urls_from_xpath("//form","action").each { |url| @links << url } # get <form action=""> elements
 
       # <meta> refresh
       @hdoc.search("//meta").each do |meta|

@@ -96,16 +96,16 @@ module WWMD
 
     # get a value using its index
     # override Array#[]
-    alias_method :old_get, :[]#:nodoc:
+    alias_method :fa_get, :[]#:nodoc:
     def [](*args)
       if args.first.class == Fixnum
-        self.old_get(args.first)
+        self.fa_get(args.first)
       else
         self.get_value(args.first)
       end
     end
 
-    alias_method :old_set, :[]=#:nodoc:
+    alias_method :fa_set, :[]=#:nodoc:
     # set a key using its index, array key or add using a new key i.e.:
     # if setting:
     #  form = [['key','value'],['foo','bar']]
@@ -117,7 +117,7 @@ module WWMD
     def []=(*args)
       key,value = args
       if args.first.kind_of?(Fixnum)
-        return self.old_set(*args)
+        return self.fa_set(*args)
       elsif self.has_key?(key)
         return self.set_value(key,value)
       else
