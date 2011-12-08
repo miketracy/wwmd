@@ -11,6 +11,7 @@ module WWMD
   class Scrape
 
     attr_accessor :debug
+    attr_accessor :enable
     attr_accessor :warn
     attr_accessor :links  # links found on page
     attr_accessor :jlinks # links to javascript includes
@@ -21,6 +22,7 @@ module WWMD
       @page = page
       @hdoc = HDOC.parse(@page)
       @links = Array.new
+      @enable = true
       @debug = false
       @warn = false
     end

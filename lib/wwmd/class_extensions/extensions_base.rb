@@ -134,7 +134,8 @@ class String
     ret = FormArray.new
     self.split("&").each do |x|
       y = x.split("=",2)
-      ret[y[0].to_s] = y[1].to_s
+      ret.add(y[0].to_s,y[1].to_s)
+#      ret[y[0].to_s] = y[1].to_s
 #      ret.extend!(y[0].to_s,y[1].to_s)
     end
     ret.action = action if action

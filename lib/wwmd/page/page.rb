@@ -6,6 +6,7 @@ module WWMD
     attr_accessor :body_data
     attr_accessor :post_data
     attr_accessor :header_data
+    attr_accessor :resp_headers
     attr_accessor :use_referer
     attr_reader   :forms
     attr_reader   :last_error
@@ -33,6 +34,7 @@ module WWMD
     end
 
     def initialize(opts={}, &block)
+#      @report_array = ReportArray.new()
       @opts = opts.clone
       DEFAULTS.each { |k,v| @opts[k] = v unless @opts.has_key?(k) }
       @spider = Spider.new(@opts)
@@ -46,9 +48,12 @@ module WWMD
       @post_data = ""
       @comments = []
       @header_data = FormArray.new
+      @resp_headers = ""
       @header_file = nil
 
       @curl_object = Curl::Easy.new
+      @curl_object.ssl_verify_host = false
+      @curl_object.ssl_verify_peer = false
       @opts.each do |k,v|
         next if k == :proxy_url
         if (@curl_object.respond_to?("#{k}=".intern))
@@ -110,13 +115,13 @@ module WWMD
         c =~ /\[if IE\]/ ||
         c =~ /\[if IE \d/ ||
         c =~ /\[if lt IE \d/
-      end
+      end if @scrape.enable
       @links = @scrape.for_links.map do |url|
         l = @urlparse.parse(self.last_effective_url,url).to_s
-      end
-      @jlinks = @scrape.for_javascript_links
-      @forms = @scrape.for_forms
-      @spider.add(self.last_effective_url,@links)
+      end if @scrape.enable
+      @jlinks = @scrape.for_javascript_links      if @scrape.enable
+      @forms = @scrape.for_forms                  if @scrape.enable
+      @spider.add(self.last_effective_url,@links) if @spider.enable
       return [self.code,self.body_data.size]
     end
 
@@ -126,6 +131,7 @@ module WWMD
       @body_data = ""
       @post_data = nil
       @header_data.clear
+      @resp_headers = ""
       @last_error = nil
     end
 
@@ -242,6 +248,7 @@ module WWMD
 
     # callback for <tt>self.on_header</tt>
     def _header_cb(data)
+      @resp_headers << data
       myArr = Array.new(data.split(":",2))
       @header_data.add(myArr[0].to_s.strip,myArr[1].to_s.strip)
 #      @header_data[myArr[0].to_s.strip] = myArr[1].to_s.strip

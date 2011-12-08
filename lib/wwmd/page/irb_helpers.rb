@@ -46,12 +46,12 @@ module WWMD
     alias_method :req_headers, :request_headers#:nodoc:
 
     # IRB: display response headers
-    def response_headers
-      self.header_data.each { |x| puts "#{x[0]} :: #{x[1]}" }
-      return nil
-    end
+#    def response_headers
+#      self.header_data.each { |x| puts "#{x[0]} :: #{x[1]}" }
+#      return nil
+#    end
 
-    alias_method :resp_headers, :response_headers#:nodoc:
+#    alias_method :resp_headers, :response_headers#:nodoc:
 
     # display self.body_data
     def dump_body

@@ -1,13 +1,13 @@
 # third-party
 require 'rubygems'
 unless self.respond_to?(:java)
-  require 'ruby-debug'
-  require 'curb'
+#  require 'ruby-debug'
 else
 #  I_KNOW_I_AM_USING_AN_OLD_AND_BUGGY_VERSION_OF_LIBXML2 = true
 #  require 'curb_ffi'
 #  include CurbFfi
 end
+require 'curb'
 require 'yaml'
 require 'fileutils'
 require 'base64'
