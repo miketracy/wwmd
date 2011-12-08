@@ -1,0 +1,6 @@
+*.orig
+*.gem
+*.stub
+*.tgz
+*.pem
+doc/
