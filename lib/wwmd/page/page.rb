@@ -98,7 +98,8 @@ module WWMD
     # scrape class.
     #
     # returns: <tt>array [ code, page_status, body_data.size ]</tt>
-    def set_data
+    def set_data(scrape=false)
+      scrape ||= @scrape.enabled?
       # reset scrape and inputs object
       # transparently gunzip
       begin
@@ -115,13 +116,13 @@ module WWMD
         c =~ /\[if IE\]/ ||
         c =~ /\[if IE \d/ ||
         c =~ /\[if lt IE \d/
-      end if @scrape.enable
+      end if scrape
       @links = @scrape.for_links.map do |url|
         l = @urlparse.parse(self.last_effective_url,url).to_s
-      end if @scrape.enable
-      @jlinks = @scrape.for_javascript_links      if @scrape.enable
-      @forms = @scrape.for_forms                  if @scrape.enable
-      @spider.add(self.last_effective_url,@links) if @spider.enable
+      end if scrape
+      @jlinks = @scrape.for_javascript_links      if scrape
+      @forms = @scrape.for_forms                  if scrape
+      @spider.add(self.last_effective_url,@links) if @spider.enabled?
       return [self.code,self.body_data.size]
     end
 
@@ -132,6 +133,8 @@ module WWMD
       @post_data = nil
       @header_data.clear
       @resp_headers = ""
+      @links = nil
+      @jlinks = nil
       @last_error = nil
     end
 
