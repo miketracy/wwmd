@@ -17,11 +17,11 @@ require 'uri'
 require 'htmlentities'
 require 'nkf'
 require 'rexml/document'
+load    'version.rb'
 
 module WWMD
 
   # :stopdoc:
-  VERSION = "0.2.20.3"
   PARSER = :nokogiri  # :nokogiri || :hpricot
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
