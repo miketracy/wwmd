@@ -3,7 +3,9 @@ require "base64"
 require "stringio"
 require 'zlib'
 require 'open3'
-require 'sha1'
+if RUBY_VERSION < "1.9"
+  require 'sha1'
+end
 
 HEXCHARS = [("0".."9").to_a, ("a".."f").to_a].flatten unless defined?(HEXCHARS)
 

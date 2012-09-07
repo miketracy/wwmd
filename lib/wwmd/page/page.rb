@@ -35,7 +35,7 @@ module WWMD
 
     def initialize(opts={}, &block)
 #      @report_array = ReportArray.new()
-      @opts = opts.clone
+      @opts = opts.dup
       DEFAULTS.each { |k,v| @opts[k] = v unless @opts.has_key?(k) }
       @spider = Spider.new(@opts)
       @scrape = Scrape.new
@@ -56,6 +56,7 @@ module WWMD
       @curl_object.ssl_verify_peer = false
       @opts.each do |k,v|
         next if k == :proxy_url
+        next if k == :use_ssl
         if (@curl_object.respond_to?("#{k}=".intern))
           @curl_object.send("#{k}=".intern,v)
         else
@@ -100,6 +101,8 @@ module WWMD
     # returns: <tt>array [ code, page_status, body_data.size ]</tt>
     def set_data(scrape=false)
       scrape ||= @scrape.enabled?
+      @spider.disable unless scrape
+
       # reset scrape and inputs object
       # transparently gunzip
       begin
@@ -109,7 +112,7 @@ module WWMD
       rescue => e
       end
       @scrape.reset(self.body_data)
-      @inputs.set
+      @inputs.set if scrape
 
       # remove comments that are css selectors for IE silliness
       @comments = @scrape.for_comments.reject do |c|
@@ -121,7 +124,7 @@ module WWMD
         l = @urlparse.parse(self.last_effective_url,url).to_s
       end if scrape
       @jlinks = @scrape.for_javascript_links      if scrape
-      @forms = @scrape.for_forms                  if scrape
+      @forms = @scrape.for_forms                  #if scrape
       @spider.add(self.last_effective_url,@links) if @spider.enabled?
       return [self.code,self.body_data.size]
     end
@@ -196,7 +199,15 @@ module WWMD
       self.set_data
     end
 
-    # submit a form using POST string
+    # submit a raw string using PUT
+    def put_string(post_string)
+      self.clear_data
+      self.http_put(post_string)
+      putw "WARN: authentication headers in response" if self.auth?
+      self.set_data
+    end
+
+    # submit a raw string using POST
     def submit_string(post_string)
       self.clear_data
       self.http_post(post_string)

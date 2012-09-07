@@ -4,9 +4,9 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  load 'lib/version.rb'
+#  load 'lib/version.rb'
   s.name = %q{wwmd}
-  s.version = WWMD::VERSION
+  s.version = "0.3.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mike Tracy"]
