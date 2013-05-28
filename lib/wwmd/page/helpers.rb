@@ -1,5 +1,6 @@
 module WWMD
   class Page
+
     # copy and paste from burp request windows
     # page object gets set with headers and url (not correct)
     # returns [headers,form]

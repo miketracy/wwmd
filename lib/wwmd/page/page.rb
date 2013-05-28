@@ -6,6 +6,7 @@ module WWMD
     attr_accessor :body_data
     attr_accessor :post_data
     attr_accessor :header_data
+    attr_accessor :resp_headers
     attr_accessor :use_referer
     attr_reader   :forms
     attr_reader   :last_error
@@ -33,9 +34,9 @@ module WWMD
     end
 
     def initialize(opts={}, &block)
-      @opts = opts.clone
-      DEFAULTS.each { |k,v| @opts[k] = v unless opts[k] }
-      @spider = Spider.new(opts)
+      @opts = opts.dup
+      DEFAULTS.each { |k,v| @opts[k] = v unless @opts.has_key?(k) }
+      @spider = Spider.new(@opts)
       @scrape = Scrape.new
       @base_url ||= opts[:base_url]
       @scrape.warn = opts[:scrape_warn] if !opts[:scrape_warn].nil? # yeah yeah... bool false
@@ -46,14 +47,19 @@ module WWMD
       @post_data = ""
       @comments = []
       @header_data = FormArray.new
+      @resp_headers = ""
       @header_file = nil
 
       @curl_object = Curl::Easy.new
+      @curl_object.ssl_verify_host = false
+      @curl_object.ssl_verify_peer = false
       @opts.each do |k,v|
         next if k == :proxy_url
-        self.instance_variable_set("@#{k.to_s}".intern,v)
-        if (@curl_object.methods.include?("#{k}="))
-          @curl_object.send("#{k}=",v)
+        next if k == :use_ssl
+        if (@curl_object.respond_to?("#{k}=".intern))
+          @curl_object.send("#{k}=".intern,v)
+        else
+          self.instance_variable_set("@#{k.to_s}".intern,v)
         end
       end
       @curl_object.on_body   { |data| self._body_cb(data) }
@@ -92,7 +98,10 @@ module WWMD
     # scrape class.
     #
     # returns: <tt>array [ code, page_status, body_data.size ]</tt>
-    def set_data
+    def set_data(scrape=false)
+      scrape ||= @scrape.enabled?
+      @spider.disable unless scrape
+
       # reset scrape and inputs object
       # transparently gunzip
       begin
@@ -102,20 +111,20 @@ module WWMD
       rescue => e
       end
       @scrape.reset(self.body_data)
-      @inputs.set
+      @inputs.set if scrape
 
       # remove comments that are css selectors for IE silliness
       @comments = @scrape.for_comments.reject do |c|
         c =~ /\[if IE\]/ ||
         c =~ /\[if IE \d/ ||
         c =~ /\[if lt IE \d/
-      end
+      end if scrape
       @links = @scrape.for_links.map do |url|
-        @urlparse.parse(self.last_effective_url,url).to_s
-      end
-      @jlinks = @scrape.for_javascript_links
-      @forms = @scrape.for_forms
-      @spider.add(self.last_effective_url,@links)
+        l = @urlparse.parse(self.last_effective_url,url).to_s
+      end if scrape
+      @jlinks = @scrape.for_javascript_links      if scrape
+      @forms = @scrape.for_forms                  #if scrape
+      @spider.add(self.last_effective_url,@links) if @spider.enabled?
       return [self.code,self.body_data.size]
     end
 
@@ -125,6 +134,9 @@ module WWMD
       @body_data = ""
       @post_data = nil
       @header_data.clear
+      @resp_headers = ""
+      @links = nil
+      @jlinks = nil
       @last_error = nil
     end
 
@@ -163,6 +175,7 @@ module WWMD
         reg = iform
         iform = nil
       end
+      reg = WWMD::ESCAPE[reg] if reg.class == Symbol
       self.clear_data
       ["Expect","X-Forwarded-For","Content-length"].each { |s| self.clear_header(s) }
       self.headers["Referer"] = self.cur if self.use_referer
@@ -185,7 +198,15 @@ module WWMD
       self.set_data
     end
 
-    # submit a form using POST string
+    # submit a raw string using PUT
+    def put_string(post_string)
+      self.clear_data
+      self.http_put(post_string)
+      putw "WARN: authentication headers in response" if self.auth?
+      self.set_data
+    end
+
+    # submit a raw string using POST
     def submit_string(post_string)
       self.clear_data
       self.http_post(post_string)
@@ -240,6 +261,7 @@ module WWMD
 
     # callback for <tt>self.on_header</tt>
     def _header_cb(data)
+      @resp_headers << data
       myArr = Array.new(data.split(":",2))
       @header_data.add(myArr[0].to_s.strip,myArr[1].to_s.strip)
 #      @header_data[myArr[0].to_s.strip] = myArr[1].to_s.strip

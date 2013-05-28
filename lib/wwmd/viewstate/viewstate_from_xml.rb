@@ -40,7 +40,8 @@ module WWMD
         when "hexify"
           node.inner_text.dehexify
         else
-          node.inner_text
+#          node.inner_text
+          node.inner_text.unescape # ZZZZ auto-unescape for fuzzing
       end
     end
 

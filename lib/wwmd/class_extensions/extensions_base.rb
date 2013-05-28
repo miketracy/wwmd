@@ -121,21 +121,24 @@ class String
   # write string to passed filename
   # if filename is nil? will raise an error
   def write(fname=nil)
-    raise "filename required" if fname.nil?
+    raise "filename required" unless fname
     File.write(fname,self)
-    return fname
+    self
   end
 
   # parse passed GET param string into a form and return the FormArray object
-  def to_form
+  def to_form(action=nil)
     if self.split("\n").size > 1
       return self.to_form_from_show
     end
     ret = FormArray.new
     self.split("&").each do |x|
       y = x.split("=",2)
-      ret.extend!(y[0].to_s,y[1].to_s)
+      ret.add(y[0].to_s,y[1].to_s)
+#      ret[y[0].to_s] = y[1].to_s
+#      ret.extend!(y[0].to_s,y[1].to_s)
     end
+    ret.action = action if action
     return ret
   end
 

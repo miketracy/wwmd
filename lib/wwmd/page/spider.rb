@@ -15,6 +15,7 @@ module WWMD
     attr_reader   :opts
     attr_accessor :ignore
     attr_accessor :csrf_token
+    attr_accessor :enabled  # hack!
 
     DEFAULT_IGNORE = [
       /logoff/i,
@@ -33,7 +34,12 @@ module WWMD
         @local_only = opts[:spider_local_only]
       end
       @ignore = ignore || DEFAULT_IGNORE
+      @enabled ||= true
     end
+
+    def disable;  @enabled = false; end
+    def enable;   @enabled = true; end
+    def enabled?; @enabled; end
 
     # push an url onto the queue
     def push_url(url)

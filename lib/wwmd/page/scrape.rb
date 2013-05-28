@@ -1,5 +1,3 @@
-# o hai!  I need your help.
-
 module WWMD
   LINKS_REGEXP = [
     /window\.open\s*\(([^\)]+)/i,
@@ -13,6 +11,7 @@ module WWMD
   class Scrape
 
     attr_accessor :debug
+    attr_accessor :enabled
     attr_accessor :warn
     attr_accessor :links  # links found on page
     attr_accessor :jlinks # links to javascript includes
@@ -23,9 +22,14 @@ module WWMD
       @page = page
       @hdoc = HDOC.parse(@page)
       @links = Array.new
+      @enabled ||= true
       @debug = false
       @warn = false
     end
+
+    def disable; @enabled = false; end
+    def enable;  @enabled = true; end
+    def enabled?; @enabled; end
 
     # reset this scrape object (called by WWMD::Page)
     def reset(page)
@@ -98,11 +102,11 @@ module WWMD
     # then get //script tags and regexp out links in javascript function calls
     # from elem.inner_html
     def for_links(reject=true)
-      self.urls_from_xpath("//a","href").each { |url| @links << url };      # get <a href=""> elements
-      self.urls_from_xpath("//area","href").each { |url| @links << url };   # get <area href=""> elements
-      self.urls_from_xpath("//frame","src").each { |url| @links << url };   # get <frame src=""> elements
-      self.urls_from_xpath("//iframe","src").each { |url| @links << url };  # get <iframe src=""> elements
-      self.urls_from_xpath("//form","action").each { |url| @links << url }; # get <form action=""> elements
+      self.urls_from_xpath("//a","href").each      { |url| @links << url } # get <a href=""> elements
+      self.urls_from_xpath("//area","href").each   { |url| @links << url } # get <area href=""> elements
+      self.urls_from_xpath("//frame","src").each   { |url| @links << url } # get <frame src=""> elements
+      self.urls_from_xpath("//iframe","src").each  { |url| @links << url } # get <iframe src=""> elements
+      self.urls_from_xpath("//form","action").each { |url| @links << url } # get <form action=""> elements
 
       # <meta> refresh
       @hdoc.search("//meta").each do |meta|

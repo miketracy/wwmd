@@ -1,6 +1,8 @@
 =begin rdoc
 This is a weird kind of data structure for no other reason than
 I wanted to keep the form inputs in order when they come in.
+(required for 1.8.7 and 1.9 due to the fact that there can be
+multiple keys of the same name)
 
 Accessing this either as a hash or an array (but => won't work)
 
@@ -96,16 +98,16 @@ module WWMD
 
     # get a value using its index
     # override Array#[]
-    alias_method :old_get, :[]#:nodoc:
+    alias_method :fa_get, :[]#:nodoc:
     def [](*args)
       if args.first.class == Fixnum
-        self.old_get(args.first)
+        self.fa_get(args.first)
       else
         self.get_value(args.first)
       end
     end
 
-    alias_method :old_set, :[]=#:nodoc:
+    alias_method :fa_set, :[]=#:nodoc:
     # set a key using its index, array key or add using a new key i.e.:
     # if setting:
     #  form = [['key','value'],['foo','bar']]
@@ -117,7 +119,7 @@ module WWMD
     def []=(*args)
       key,value = args
       if args.first.kind_of?(Fixnum)
-        return self.old_set(*args)
+        return self.fa_set(*args)
       elsif self.has_key?(key)
         return self.set_value(key,value)
       else
@@ -256,14 +258,16 @@ module WWMD
 ## parsing convenience
 
     # dump a web page containing a csrf example of the current FormArray
-    def to_csrf(action=nil,unescval=false)
-      action = self.action if not action
+    def to_csrf(quot=nil,action=nil,unescval=false)
+      quot = "'" unless quot
+      action = self.action unless action
       ret = ""
       ret << "<html><body>\n"
-      ret << "<form method='post' id='wwmdtest' name='wwmdtest' action='#{action}'>\n"
+      ret << "<form method=#{quot}post#{quot} id=#{quot}wwmdtest#{quot} name=#{quot}wwmdtest#{quot} action=#{quot}#{action}#{quot}>\n"
       self.each do |key,val|
+        val.gsub!(/\+/," ")
         val = val.unescape.gsub(/'/) { %q[\'] } if unescval
-            ret << "<input name='#{key.to_s.unescape}' type='hidden' value='#{val.to_s.unescape}' />\n"
+        ret << "<input name=#{quot}#{key.to_s.unescape}#{quot} type=#{quot}hidden#{quot} value=#{quot}#{val.to_s.unescape}#{quot} />\n"
       end
       ret << "</form>\n"
       ret << "<script>document.wwmdtest.submit()</script>\n"

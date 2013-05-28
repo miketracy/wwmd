@@ -1,5 +1,6 @@
 module WWMD
   class Page
+
 #:section: Parsing convenience methods
 # methods that help parse and find information on a page including
 # access to forms etc.
@@ -14,8 +15,11 @@ module WWMD
       id = 0 if not id
       return nil if forms.empty? || !forms[id]
       f = @forms[id]
-      action = f.action
-      action ||= self.action
+      action   = f.action
+      action ||= action
+      action ||= cur
+      action ||= "PARSE_ERROR"
+      action = nil if cur.basename == action
       url_action = @urlparse.parse(self.cur,action).to_s
       type = f.type
       FormArray.new do |x|
@@ -33,14 +37,19 @@ module WWMD
       return @urlparse.parse(self.last_effective_url,act).to_s
     end
 
-    # return an array of Element objects for an xpath search
+    # xpath search
     def search(xpath)
       self.scrape.hdoc.search(xpath)
     end
 
+    # traverse
+    def traverse(&block)
+      self.scrape.hdoc.traverse(&block)
+    end
+
     # return an array of inner_html for each <script> tag encountered
     def dump_scripts
-      self.get_tags("//script").map { |s| s.inner_html if s.inner_html.strip != '' }
+      self.get_tags(".//script").map { |s| s.inner_html if s.inner_html.strip != '' }
     end
 
     alias_method :scripts, :dump_scripts
