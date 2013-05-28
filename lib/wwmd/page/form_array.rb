@@ -1,6 +1,8 @@
 =begin rdoc
 This is a weird kind of data structure for no other reason than
 I wanted to keep the form inputs in order when they come in.
+(required for 1.8.7 and 1.9 due to the fact that there can be
+multiple keys of the same name)
 
 Accessing this either as a hash or an array (but => won't work)
 

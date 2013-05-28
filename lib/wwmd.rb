@@ -22,7 +22,7 @@ load    'version.rb'
 module WWMD
 
   # :stopdoc:
-  PARSER = :nokogiri  # :nokogiri || :hpricot
+  PARSER = :nokogiri
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
   # :startdoc:
@@ -60,7 +60,7 @@ module WWMD
         ::File.join(::File.dirname(fname), dir, '**', '*.rb'))
 
     Dir.glob(search_me).sort.each do |rb|
-      next if rb =~ /html2text_/
+      next if rb =~ /html2text/
       require rb
     end
   end
@@ -69,16 +69,8 @@ end  # module WWMD
 
 WWMD.require_all_libs_relative_to(__FILE__)
 
-# special case parser
-
-if WWMD::PARSER == :nokogiri
-  require 'nokogiri'
-  WWMD::HDOC = Nokogiri::HTML
-  require 'wwmd/page/html2text_nokogiri'
-else
-  require 'hpricot'
-  WWMD::HDOC = Hpricot
-  require 'wwmd/page/html2text_hpricot'
-end
+require 'nokogiri'
+WWMD::HDOC = Nokogiri::HTML
+require 'wwmd/page/html2text'
 
 # EOF

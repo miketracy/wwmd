@@ -79,6 +79,7 @@ module WWMD
     alias_method :current, :current_url
     alias_method :cur, :current_url
     alias_method :now, :current_url
+#    alias_method :last, :current_url
 
     # the last http response code
     def code

@@ -6,7 +6,7 @@
 Gem::Specification.new do |s|
 #  load 'lib/version.rb'
   s.name = %q{wwmd}
-  s.version = "0.3.1.1"
+  s.version = "0.3.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mike Tracy"]
@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "examples/config_example.yaml",
      "examples/wwmd_example.rb",
+     "lib/version.rb",
      "lib/wwmd.rb",
      "lib/wwmd/allpairs.rb",
      "lib/wwmd/class_extensions.rb",
@@ -39,8 +40,7 @@ Gem::Specification.new do |s|
      "lib/wwmd/page/form_array.rb",
      "lib/wwmd/page/headers.rb",
      "lib/wwmd/page/helpers.rb",
-     "lib/wwmd/page/html2text_hpricot.rb",
-     "lib/wwmd/page/html2text_nokogiri.rb",
+     "lib/wwmd/page/html2text.rb",
      "lib/wwmd/page/inputs.rb",
      "lib/wwmd/page/irb_helpers.rb",
      "lib/wwmd/page/page.rb",

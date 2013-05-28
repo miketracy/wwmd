@@ -34,7 +34,6 @@ module WWMD
     end
 
     def initialize(opts={}, &block)
-#      @report_array = ReportArray.new()
       @opts = opts.dup
       DEFAULTS.each { |k,v| @opts[k] = v unless @opts.has_key?(k) }
       @spider = Spider.new(@opts)

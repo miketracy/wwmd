@@ -3,4 +3,5 @@
 *.stub
 *.tgz
 *.pem
+__cookiejar
 doc/

@@ -1,5 +1,6 @@
 module WWMD
   class Page
+
 #:section: Parsing convenience methods
 # methods that help parse and find information on a page including
 # access to forms etc.
