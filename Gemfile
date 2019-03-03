@@ -1,0 +1,6 @@
+source 'https://rubygems.org'
+gem 'htmlentities'
+gem 'activesupport'
+gem 'xml-simple'
+gem 'curb'
+gem 'nokogiri'
