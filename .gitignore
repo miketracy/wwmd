@@ -3,5 +3,11 @@
 *.stub
 *.tgz
 *.pem
+.yardoc/
+Gemfile.lock
+arch/
+lib/wwmd/allpairs.rb.gz
+lib/wwmd/foo.zip
+trainer_test.rb
 __cookiejar
 doc/

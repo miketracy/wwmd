@@ -12,7 +12,7 @@ HEXCHARS = [("0".."9").to_a, ("a".."f").to_a].flatten unless defined?(HEXCHARS)
 #-----------------------------------------------------------------------------
 # Mixins and class-specific items
 
-class Fixnum#:nodoc:
+class Integer #:nodoc:
   def to_l32; [self].pack "L"; end
   def to_b32; [self].pack "N"; end
   def to_l16; [self].pack "v"; end

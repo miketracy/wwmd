@@ -34,7 +34,8 @@ module WWMD
       id = 0 if not id
       act = self.forms[id].action
       return self.last_effective_url if (act.nil? || act.empty?)
-      return @urlparse.parse(self.last_effective_url,act).to_s
+      return self.base_url + act
+#      return @urlparse.parse(self.last_effective_url,act).to_s
     end
 
     # xpath search

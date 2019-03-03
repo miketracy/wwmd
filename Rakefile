@@ -6,7 +6,7 @@ begin
     gemspec.version = WWMD::VERSION
     gemspec.summary = "framework and helpers for conducting web application security assessments"
     gemspec.description = ""
-    gemspec.email = "mtracy@matasano.com"
+    gemspec.email = "mike.tracy@gmail.com"
     gemspec.homepage = "http://github.com/miketracy/wwmd/tree/master"
     gemspec.authors = ["Mike Tracy"]
   end

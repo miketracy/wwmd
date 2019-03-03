@@ -7,6 +7,7 @@ else
 #  require 'curb_ffi'
 #  include CurbFfi
 end
+require 'nokogiri'
 require 'curb'
 require 'yaml'
 require 'fileutils'
@@ -69,7 +70,6 @@ end  # module WWMD
 
 WWMD.require_all_libs_relative_to(__FILE__)
 
-require 'nokogiri'
 WWMD::HDOC = Nokogiri::HTML
 require 'wwmd/page/html2text'
 

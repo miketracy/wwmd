@@ -81,10 +81,10 @@ module WWMD
       self << [key,value]
     end
 
-    # key = Fixnum set value at index key
+    # key = Integer set value at index key
     # key = String find key named string and set value
     def set_value!(key,value)
-      if key.class == Fixnum
+      if key.class == Integer # Fixnum
         self[key][1] = value
         return [self[key][0], value]
       end
@@ -100,7 +100,7 @@ module WWMD
     # override Array#[]
     alias_method :fa_get, :[]#:nodoc:
     def [](*args)
-      if args.first.class == Fixnum
+      if args.first.class == Integer # Fixnum
         self.fa_get(args.first)
       else
         self.get_value(args.first)
@@ -118,7 +118,7 @@ module WWMD
     #  
     def []=(*args)
       key,value = args
-      if args.first.kind_of?(Fixnum)
+      if args.first.kind_of?(Integer) # Fixnum)
         return self.fa_set(*args)
       elsif self.has_key?(key)
         return self.set_value(key,value)
@@ -131,7 +131,7 @@ module WWMD
     alias_method :set, :set_value!
 
     def get_value(key)
-      if key.class == Fixnum
+      if key.class == Integer # Fixnum
         return self[key][1]
       end
       self.each_index do |i|
